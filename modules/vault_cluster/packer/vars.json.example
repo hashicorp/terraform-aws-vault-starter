@@ -1,0 +1,8 @@
+{
+  "vault_zip": "./binaries/vault_1.3.2_linux_amd64.zip",
+  "vault_version": "1.3.2",
+  "username": "somebody",
+  "pubkey": "ssh-rsa AAAAB3NzaC1d/e1lIXGXX7DD/zlzHcw== somebody@somebody.local",
+  "owner": "somebody@hashicorp.com",
+  "release": "0.0.1"
+}

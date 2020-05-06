@@ -1,0 +1,17 @@
+#  Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# .tfvars files
+*.tfvars
+
+# Packer vars
+**/vars.json
+
+# local binaries directory
+packer/binaries/*
+
+.DS_Store
