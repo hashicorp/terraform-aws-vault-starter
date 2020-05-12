@@ -14,7 +14,9 @@ the included variables appropriately.
 
 Run the following command to validate your configuration:
 
-`packer validate -var-file=vars.json packer.json`
+```shell
+$ packer validate -var-file=vars.json packer.json
+```
 
 You should see the following output:
 
@@ -25,7 +27,9 @@ Template validated successfully.
 
 Run the following command to build your AMI:
 
-`packer build -var-file=vars.json packer.json`
+```shell
+$ packer build -var-file=vars.json packer.json
+```
 
 ## Note:
 Be sure to configure the specific
