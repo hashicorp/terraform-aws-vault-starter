@@ -35,5 +35,5 @@ $ packer build -var-file=vars.json packer.json
 Be sure to configure the specific
 [ami_regions](https://www.packer.io/docs/builders/amazon-ebs.html#ami_regions)
 in `packer.json` that you would like to deploy your AMI to. AMIs do not span
-regions, so you will need to make sure your a copy of AMI exists in the region
+regions, so you will need to make sure a copy of your AMI exists in the region
 you want to deploy your infrastructure.
