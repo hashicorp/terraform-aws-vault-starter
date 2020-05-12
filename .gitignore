@@ -12,6 +12,6 @@
 **/vars.json
 
 # local binaries directory
-packer/binaries/*
+modules/vault_cluster/packer/binaries/*.zip
 
 .DS_Store
