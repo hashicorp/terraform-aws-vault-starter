@@ -5,9 +5,9 @@ for creating identical machine images for multiple platforms from a single
 source configuration.
 
 The provided Packer template([packer.json](packer.json)) assumes there is a
-`vars.json` file to go along with it (see `vars.json.example` for reference).
-Copy the contents of `vars.json.example` to a file named `vars.json` and define
-the included variables appropriately.
+`vars.json` file to go along with it (see [vars.json.example](vars.json.example)
+for reference). Copy the contents of `vars.json.example` to a file named
+`vars.json` and define the included variables appropriately.
 - This Packer setup assumes you have [downloaded the Vault
   binary](https://www.vaultproject.io/downloads) you want and have placed it in
   the [binaries](binaries) directory.
