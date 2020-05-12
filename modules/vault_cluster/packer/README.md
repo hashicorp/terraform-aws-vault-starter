@@ -10,7 +10,7 @@ Copy the contents of `vars.json.example` to a file named `vars.json` and define
 the included variables appropriately.
 - This Packer setup assumes you have [downloaded the Vault
   binary](https://www.vaultproject.io/downloads) you want and have placed it in
-  the `binaries` directory.
+  the [binaries](binaries) directory.
 
 Run the following command to validate your configuration:
 `packer validate -var-file=vars.json packer.json`
@@ -23,7 +23,7 @@ Template validated successfully.
 ```
 
 Run the following command to build your AMI:
- `packer build -var-file=vars.json packer.json`
+`packer build -var-file=vars.json packer.json`
 
 ## Note:
 Be sure to configure the specific
