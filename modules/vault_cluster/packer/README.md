@@ -13,6 +13,7 @@ the included variables appropriately.
   the [binaries](binaries) directory.
 
 Run the following command to validate your configuration:
+
 `packer validate -var-file=vars.json packer.json`
 
 You should see the following output:
@@ -23,6 +24,7 @@ Template validated successfully.
 ```
 
 Run the following command to build your AMI:
+
 `packer build -var-file=vars.json packer.json`
 
 ## Note:
