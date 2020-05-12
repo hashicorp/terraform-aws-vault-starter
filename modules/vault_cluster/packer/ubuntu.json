@@ -6,7 +6,7 @@
   },
   "builders": [
     {
-      "name": "amazon-ebs-centos-7",
+      "name": "amazon-ebs-ubuntu-20.04",
       "type": "amazon-ebs",
       "access_key": "{{ user `aws_access_key_id` }}",
       "secret_key": "{{ user `aws_secret_access_key` }}",
@@ -20,25 +20,25 @@
       "source_ami_filter": {
         "filters": {
           "virtualization-type": "hvm",
-          "name": "*CentOS Linux 7 x86_64 HVM EBS ENA*",
+          "name": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*",
           "root-device-type": "ebs"
         },
         "owners": ["679593333241"],
         "most_recent": true
       },
-      "ssh_username": "centos",
+      "ssh_username": "ubuntu",
       "ssh_timeout": "5m",
       "ami_virtualization_type": "hvm",
-      "ami_name": "espd-aws-immutable-vault-centos7-{{isotime \"2006-01-02-03-04\"}}",
-      "ami_description": "{{ user `owner` }}- ESPD AWS Vault - CentOS 7",
+      "ami_name": "espd-aws-immutable-vault-ubuntu-20.04-{{isotime \"2006-01-02-03-04\"}}",
+      "ami_description": "{{ user `owner` }}- ESPD AWS Vault - Ubuntu 20.04",
       "ami_regions": ["us-east-1"],
       "tags": {
         "Name": "ESPD AWS Vault v{{ user `vault_version` }}",
         "System": "espd-immutable-vault",
         "Product": "Vault",
         "Vault-Version": "{{ user `vault_version` }}",
-        "OS": "centos",
-        "OS-Version": "7",
+        "OS": "ubuntu",
+        "OS-Version": "20.04",
         "Release": "{{ user `release` }}",
         "Owner": "{{ user `owner` }}"
       },
@@ -61,8 +61,9 @@
     },
     {
       "type": "shell",
-      "script": "scripts/el7.sh",
-      "only": ["amazon-ebs-centos-7"]
+      "script": "scripts/ubuntu.sh",
+      "only": ["amazon-ebs-ubuntu-20.04"],
+      "execute_command" : "/usr/bin/cloud-init status --wait && sudo bash '{{ .Path }}'"
     },
     {
       "type": "shell",
