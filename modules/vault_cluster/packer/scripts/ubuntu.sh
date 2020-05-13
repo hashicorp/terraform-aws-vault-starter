@@ -3,13 +3,8 @@ set -euxo pipefail
 
 sudo apt -y update
 sudo apt -y upgrade
-sudo apt install -y wget
-sudo apt install -y unzip
-sudo apt install -y bind9-dnsutils
-sudo apt install -y ntp
-sudo apt install -y ca-certificates
-sudo apt install -y vim
-sudo apt install -y awscli
+sudo apt install -y wget unzip bind9-dnsutils ntp \
+    ca-certificates vim awscli
 
 if ! systemctl is-enabled --quiet ntp.service; then
   sudo systemctl enable ntp.service
