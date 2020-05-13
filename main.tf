@@ -12,5 +12,4 @@ module "vault_cluster" {
   nat_gateway_subnet_cidr      = var.nat_gateway_subnet_cidr
   lambda_primary_subnet_cidr   = var.lambda_primary_subnet_cidr
   lambda_secondary_subnet_cidr = var.lambda_secondary_subnet_cidr
-  vault_download               = var.vault_download
 }

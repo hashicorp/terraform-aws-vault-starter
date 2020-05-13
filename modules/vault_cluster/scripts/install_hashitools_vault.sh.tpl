@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-curl -L "${vault_download}" > vault.zip
-unzip -o vault.zip -d /usr/local/bin
-chmod u+x /usr/local/bin/vault
-
 echo "Starting deployment from AMI: ${ami}"
 export availability_zone="$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone)"
 export instance_id="$(curl -s http://169.254.169.254/latest/meta-data/instance-id)"

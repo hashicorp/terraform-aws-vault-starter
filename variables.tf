@@ -53,11 +53,3 @@ variable "lambda_secondary_subnet_cidr" {
   description = "CIDR block for secondary lambda subnet"
   default     = "172.31.144.0/20"
 }
-
-# The packer image configures most of the AMI, but you have the option
-# to change the version of Vault at runtime
-
-variable "vault_download" {
-  description = "Download URL for Vault binary"
-  default     = "https://releases.hashicorp.com/vault/1.4.0/vault_1.4.0_linux_amd64.zip"
-}
