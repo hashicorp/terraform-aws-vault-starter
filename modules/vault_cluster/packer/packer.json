@@ -63,7 +63,7 @@
       "type": "shell",
       "script": "scripts/ubuntu.sh",
       "only": ["amazon-ebs-ubuntu-20.04"],
-      "execute_command" : "/usr/bin/cloud-init status --wait && sudo bash '{{ .Path }}'"
+      "execute_command" : "/usr/bin/cloud-init status --wait && bash '{{ .Path }}'"
     },
     {
       "type": "shell",

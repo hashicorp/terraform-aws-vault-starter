@@ -1,8 +1,6 @@
 {
   "vault_zip": "./binaries/vault_1.4.1_linux_amd64.zip",
   "vault_version": "1.4.1",
-  "username": "somebody",
-  "pubkey": "ssh-rsa AAAAB3NzaC1d/e1lIXGXX7DD/zlzHcw== somebody@somebody.local",
   "owner": "somebody@hashicorp.com",
   "release": "0.0.1"
 }
