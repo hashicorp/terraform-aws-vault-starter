@@ -51,11 +51,6 @@
   "provisioners": [
     {
       "type": "file",
-      "source": "{{ user `vault_zip` }}",
-      "destination": "/tmp/vault.zip"
-    },
-    {
-      "type": "file",
       "source": "files",
       "destination": "/tmp"
     },
@@ -67,7 +62,10 @@
     },
     {
       "type": "shell",
-      "script": "scripts/setup.sh"
+      "script": "scripts/setup.sh",
+      "environment_vars": [
+         "vault_version={{user `vault_version`}}"
+       ]
     },
     {
       "type": "shell",
