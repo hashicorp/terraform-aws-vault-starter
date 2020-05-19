@@ -5,6 +5,12 @@ export availability_zone="$(curl -s http://169.254.169.254/latest/meta-data/plac
 export instance_id="$(curl -s http://169.254.169.254/latest/meta-data/instance-id)"
 export local_ipv4="$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)"
 
+# Generate self-signed certificates for LB->Instance TLS comms. AWS LBs don't validate TLS certificates, so self-signed is okay.
+# The /opt/vault/tls folder was created by Packer
+# IN PRODUCTION THESE SHOULD USE LEGITIMATE CERTS
+openssl req -x509 -newkey rsa:4096 -keyout /opt/vault/tls/key.pem -out /opt/vault/tls/cert.pem -days 365 -nodes -subj "/C=US/ST=CA/L=San Francisco/O=HashiCorp/OU=Org/CN=127.0.0.1"
+chown vault:vault /opt/vault/tls/*
+
 # Have the instance retrieve it's own instance id
 asg_name=$(aws autoscaling describe-auto-scaling-instances --instance-ids "$instance_id" --region "${region}" | jq -r ".AutoScalingInstances[].AutoScalingGroupName")
 
@@ -53,8 +59,9 @@ cluster_addr = "http://$local_ipv4:8201"
 api_addr = "http://0.0.0.0:8200"
 
 listener "tcp" {
- address     = "0.0.0.0:8200"
- tls_disable = 1
+ address       = "0.0.0.0:8200"
+ tls_key_file  = "/opt/vault/tls/key.pem"
+ tls_cert_file = "/opt/vault/tls/cert.pem"
 }
 
 seal "awskms" {
