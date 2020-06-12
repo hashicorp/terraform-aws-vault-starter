@@ -2,10 +2,6 @@ variable "vpc_id" {
   description = "VPC ID"
 }
 
-variable "ami_id" {
-  description = "AMI ID to target"
-}
-
 variable "vault_version" {
   description = "Vault version"
 }

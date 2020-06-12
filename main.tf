@@ -2,7 +2,6 @@ module "vault_cluster" {
   source = "./modules/vault_cluster"
 
   vpc_id                       = var.vpc_id
-  ami_id                       = var.ami_id
   vault_version                = var.vault_version
   owner                        = var.owner
   name_prefix                  = var.name_prefix
