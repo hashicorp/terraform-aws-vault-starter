@@ -2,6 +2,10 @@ variable "ami_id" {
   description = "AMI ID to target."
 }
 
+variable "vault_version" {
+  description = "Vault version"
+}
+
 variable "name_prefix" {
   description = "prefix used in resource names"
 }

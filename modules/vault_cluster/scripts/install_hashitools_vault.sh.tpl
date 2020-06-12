@@ -5,6 +5,23 @@ export availability_zone="$(curl -s http://169.254.169.254/latest/meta-data/plac
 export instance_id="$(curl -s http://169.254.169.254/latest/meta-data/instance-id)"
 export local_ipv4="$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)"
 
+# install package
+
+curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
+apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+apt-get update
+apt-get install -y vault=1:${vault_version}
+
+echo "Installing jq"
+curl --silent -Lo /bin/jq https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64
+chmod +x /bin/jq
+
+echo "installing AWS CLI"
+apt-get install -y awscli
+
+echo "Configuring system time"
+timedatectl set-timezone UTC
+
 # Have the instance retrieve it's own instance id
 asg_name=$(aws autoscaling describe-auto-scaling-instances --instance-ids "$instance_id" --region "${region}" | jq -r ".AutoScalingInstances[].AutoScalingGroupName")
 
@@ -153,6 +170,11 @@ echo "proceeding to start Vault service"
 
 systemctl enable vault
 systemctl start vault
+
+echo "Setup Vault profile"
+cat <<PROFILE | sudo tee /etc/profile.d/vault.sh
+export VAULT_ADDR="http://127.0.0.1:8200"
+PROFILE
 
 # have the node add this tag to itself after coming up
 # this is important for the clusterCheck function above
