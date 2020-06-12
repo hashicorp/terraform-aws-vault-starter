@@ -6,6 +6,10 @@ variable "ami_id" {
   description = "AMI ID to target"
 }
 
+variable "vault_version" {
+  description = "Vault version"
+}
+
 variable "owner" {
   description = "value of owner tag on EC2 instances"
 }
