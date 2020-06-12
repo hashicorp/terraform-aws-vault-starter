@@ -4,6 +4,22 @@ data "aws_vpc" "vault_vpc" {
   id = var.vpc_id
 }
 
+data "aws_ami" "ubuntu" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["099720109477"] # Canonical
+}
+
 data "aws_subnet_ids" "default" {
   vpc_id = data.aws_vpc.vault_vpc.id
 }
@@ -21,7 +37,7 @@ data "template_file" "install_hashitools_vault" {
   template = file("${path.module}/scripts/install_hashitools_vault.sh.tpl")
 
   vars = {
-    ami           = var.ami_id
+    ami           = data.aws_ami.ubuntu.id
     region        = data.aws_region.current.name
     kms_key_id    = aws_kms_key.vault.key_id
     vault_nodes   = var.vault_nodes
@@ -105,7 +121,7 @@ resource "aws_autoscaling_group" "vault" {
 
 resource "aws_launch_configuration" "vault" {
   name                        = "${random_id.environment_name.hex}-vault-${var.vault_cluster_version}"
-  image_id                    = var.ami_id
+  image_id                    = data.aws_ami.ubuntu.id
   instance_type               = var.instance_type
   key_name                    = var.key_name
   security_groups             = [aws_security_group.vault.id]
