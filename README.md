@@ -19,11 +19,11 @@ provider "aws" {
 module "vault_cluster" {
   source = "git@github.com:hashicorp/terraform-aws-vault-espd.git"
 
-  vpc_id      = "<your VPC id>"
-  ami_id      = "<the ami you created>"
-  owner       = "<owner name/tag>"
-  name_prefix = "<name prefix you would like attached to your environment>"
-  key_name    = "<your SSH key>"
+  vpc_id        = "<your VPC id>"
+  vault_version = "<vault version (ex: 1.4.2)>"
+  owner         = "<owner name/tag>"
+  name_prefix   = "<name prefix you would like attached to your environment>"
+  key_name      = "<your SSH key>"
 }
 ```
 
@@ -38,11 +38,11 @@ provider "aws" {
 module "vault_cluster" {
   source = "git@github.com:hashicorp/terraform-aws-vault-espd.git?ref=v0.0.1"
 
-  vpc_id      = "<your VPC id>"
-  ami_id      = "<the ami you created>"
-  owner       = "<owner name/tag>"
-  name_prefix = "<name prefix you would like attached to your environment>"
-  key_name    = "<your SSH key>"
+  vpc_id        = "<your VPC id>"
+  vault_version = "<vault version (ex: 1.4.2)>"
+  owner         = "<owner name/tag>"
+  name_prefix   = "<name prefix you would like attached to your environment>"
+  key_name      = "<your SSH key>"
 }
 ```
 
