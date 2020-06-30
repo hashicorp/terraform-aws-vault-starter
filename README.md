@@ -27,7 +27,7 @@ provider "aws" {
 }
 
 module "vault_cluster" {
-  source = "https://github.com/hashicorp/terraform-aws-vault-oss.git"
+  source = "github.com/hashicorp/terraform-aws-vault-oss.git"
 
   vpc_id        = "<your VPC id>"
   vault_version = "<vault version (ex: 1.4.2)>"
@@ -46,7 +46,7 @@ provider "aws" {
 }
 
 module "vault_cluster" {
-  source = "https://github.com/hashicorp/terraform-aws-vault-oss.git?ref=v0.1.0"
+  source = "github.com/hashicorp/terraform-aws-vault-oss.git?ref=v0.1.0"
 
   vpc_id        = "<your VPC id>"
   vault_version = "<vault version (ex: 1.4.2)>"
@@ -57,6 +57,11 @@ module "vault_cluster" {
 ```
 
 - Run `terraform init` and `terraform apply`
+
+## License
+
+This code is released under the MPL 2.0 License. Please see [LICENSE](./LICENSE)
+for more details.
 
 ## Note
 
