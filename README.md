@@ -8,7 +8,7 @@ Architecture](https://learn.hashicorp.com/vault/operations/raft-reference-archit
 
 ## About This Module
 This module implements the [Vault with Integrated Storage Reference
-Architecture](https://learn.hashicorp.com/vault/operations/raft-reference-architecture#node))
+Architecture](https://learn.hashicorp.com/vault/operations/raft-reference-architecture#node)
 on AWS using the Open Source version of Vault.
 
 For practitioners requiring [Consul](https://www.consul.io/) as a storage
