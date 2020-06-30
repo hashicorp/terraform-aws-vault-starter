@@ -27,7 +27,7 @@ provider "aws" {
 }
 
 module "vault_cluster" {
-  source = "git@github.com:hashicorp/terraform-aws-vault-espd.git"
+  source = "https://github.com/hashicorp/terraform-aws-vault-oss.git"
 
   vpc_id        = "<your VPC id>"
   vault_version = "<vault version (ex: 1.4.2)>"
@@ -46,7 +46,7 @@ provider "aws" {
 }
 
 module "vault_cluster" {
-  source = "git@github.com:hashicorp/terraform-aws-vault-espd.git?ref=v0.0.1"
+  source = "https://github.com/hashicorp/terraform-aws-vault-oss.git?ref=v0.1.0"
 
   vpc_id        = "<your VPC id>"
   vault_version = "<vault version (ex: 1.4.2)>"
