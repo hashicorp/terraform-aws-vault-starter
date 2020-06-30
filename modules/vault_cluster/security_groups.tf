@@ -10,7 +10,7 @@ resource "aws_security_group_rule" "vault_ssh" {
   from_port         = 22
   to_port           = 22
   protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
+  cidr_blocks       = local.vault_cidrs
 }
 
 resource "aws_security_group_rule" "vault_external_egress_https" {
