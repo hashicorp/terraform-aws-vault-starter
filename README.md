@@ -26,28 +26,9 @@ provider "aws" {
   region = "<your AWS region>"
 }
 
-module "vault_cluster" {
-  source = "github.com/hashicorp/terraform-aws-vault-oss.git"
-
-  vpc_id        = "<your VPC id>"
-  vault_version = "<vault version (ex: 1.4.2)>"
-  owner         = "<owner name/tag>"
-  name_prefix   = "<name prefix you would like attached to your environment>"
-  key_name      = "<your SSH key name>"
-}
-```
-
-- If you want to use a certain release of the module, specify the `ref` tag in
-  your source option as shown below:
-
-```hcl
-provider "aws" {
-  region = "<your AWS region>"
-}
-
-module "vault_cluster" {
-  source = "github.com/hashicorp/terraform-aws-vault-oss.git?ref=v0.1.0"
-
+module "vault-oss" {
+  source        = "hashicorp/vault-oss/aws"
+  version       = "0.1.0"
   vpc_id        = "<your VPC id>"
   vault_version = "<vault version (ex: 1.4.2)>"
   owner         = "<owner name/tag>"
