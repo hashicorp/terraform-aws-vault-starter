@@ -10,7 +10,7 @@ resource "aws_security_group_rule" "vault_ssh" {
   from_port         = 22
   to_port           = 22
   protocol          = "tcp"
-  cidr_blocks       = local.vault_cidrs
+  cidr_blocks       = var.allowed_inbound_cidrs
 }
 
 resource "aws_security_group_rule" "vault_external_egress_https" {
@@ -31,22 +31,26 @@ resource "aws_security_group_rule" "vault_external_egress_http" {
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
+# this rule is needed for the NLB to access the Vault nodes
+# since NLBs don't work with the concept of security groups
 resource "aws_security_group_rule" "vault_elb_access" {
   security_group_id = aws_security_group.vault.id
   type              = "ingress"
   from_port         = 8200
   to_port           = 8200
   protocol          = "tcp"
-  cidr_blocks       = local.vault_cidrs
+  cidr_blocks       = [data.aws_vpc.vault_vpc.cidr_block]
 }
 
-resource "aws_security_group_rule" "all_access" {
-  security_group_id = aws_security_group.vault.id
-  type              = "ingress"
-  from_port         = 8200
-  to_port           = 8200
-  protocol          = "-1"
-  cidr_blocks       = ["0.0.0.0/0"]
+# this rule is needed for the health checking done in the ASG
+# at startup as well as peer auto-removal
+resource "aws_security_group_rule" "vault_internal_access" {
+  security_group_id        = aws_security_group.vault.id
+  type                     = "ingress"
+  from_port                = 8200
+  to_port                  = 8200
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.vault.id
 }
 
 resource "aws_security_group_rule" "vault_internal_egress_tcp" {
@@ -74,11 +78,4 @@ resource "aws_security_group_rule" "vault_cluster" {
   to_port                  = 8201
   protocol                 = "tcp"
   source_security_group_id = aws_security_group.vault.id
-}
-
-locals {
-  // We always need to permit traffic from the local subnet for NLB health checks
-  // This could probably be tightened down to just the NLB subnets, rather than the
-  // entire VPC.
-  vault_cidrs = concat([data.aws_vpc.vault_vpc.cidr_block], var.allowed_inbound_cidrs)
 }

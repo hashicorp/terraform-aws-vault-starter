@@ -50,7 +50,6 @@ variable "vault_cluster_version" {
 variable "allowed_inbound_cidrs" {
   type        = list(string)
   description = "List of CIDR blocks to permit inbound Vault access from"
-  default     = []
 }
 
 variable "nat_gateway_subnet_cidr" {

@@ -1,6 +1,7 @@
 module "vault_cluster" {
   source = "./modules/vault_cluster"
 
+  allowed_inbound_cidrs        = var.allowed_inbound_cidrs
   vpc_id                       = var.vpc_id
   vault_version                = var.vault_version
   owner                        = var.owner
