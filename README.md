@@ -11,6 +11,10 @@ This module implements the [Vault with Integrated Storage Reference
 Architecture](https://learn.hashicorp.com/vault/operations/raft-reference-architecture#node)
 on AWS using the Open Source version of Vault.
 
+This module automatically initializes the Vault cluster and places the initial
+root token and recovery keys in [AWS Secrets
+Manager](https://aws.amazon.com/secrets-manager/).
+
 For practitioners requiring [Consul](https://www.consul.io/) as a storage
 backend and/or a wider variety of configurable options out of the box, please
 see the [Terraform AWS Vault
@@ -27,13 +31,14 @@ provider "aws" {
 }
 
 module "vault-oss" {
-  source        = "hashicorp/vault-oss/aws"
-  version       = "0.1.0"
-  vpc_id        = "<your VPC id>"
-  vault_version = "<vault version (ex: 1.4.2)>"
-  owner         = "<owner name/tag>"
-  name_prefix   = "<name prefix you would like attached to your environment>"
-  key_name      = "<your SSH key name>"
+  source                = "hashicorp/vault-oss/aws"
+  version               = "0.1.0"
+  allowed_inbound_cidrs = ["<list of inbound CIDRs>"]
+  vpc_id                = "<your VPC id>"
+  vault_version         = "<vault version (ex: 1.4.2)>"
+  owner                 = "<owner name/tag>"
+  name_prefix           = "<name prefix you would like attached to your environment>"
+  key_name              = "<your SSH key name>"
 }
 ```
 

@@ -2,6 +2,11 @@ variable "vpc_id" {
   description = "VPC ID"
 }
 
+variable "allowed_inbound_cidrs" {
+  type        = list(string)
+  description = "List of CIDR blocks to permit inbound Vault access from"
+}
+
 variable "vault_version" {
   description = "Vault version"
 }
