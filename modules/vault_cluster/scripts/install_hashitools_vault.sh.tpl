@@ -10,7 +10,7 @@ export local_ipv4="$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)
 curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
 apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
 apt-get update
-apt-get install -y vault=1:${vault_version}
+apt-get install -y vault=${vault_version}
 
 echo "Installing jq"
 curl --silent -Lo /bin/jq https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64
