@@ -1,3 +1,10 @@
+## 0.2.0 (August 13, 2020)
+
+IMPROVEMENTS:
+
+* Upgrading terraform block syntax for TF version 0.13.0+
+* Pinning version number for `aws`, `random`, and `template` providers
+
 ## 0.1.2 (July 09, 2020)
 
 IMPROVEMENTS:
