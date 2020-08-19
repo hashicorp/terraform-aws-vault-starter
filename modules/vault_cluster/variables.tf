@@ -13,7 +13,6 @@ variable "vault_elb_health_check" {
 
 variable "elb_internal" {
   type        = bool
-  default     = true
   description = "make LB internal or external"
 }
 

@@ -19,6 +19,11 @@ variable "name_prefix" {
   description = "prefix used in resource names"
 }
 
+variable "elb_internal" {
+  description = "make LB internal or external"
+  default     = true
+}
+
 variable "key_name" {
   description = "SSH key name for Vault instances"
 }
