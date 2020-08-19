@@ -16,7 +16,13 @@ variable "owner" {
 }
 
 variable "name_prefix" {
+  type = string
   description = "prefix used in resource names"
+  
+  validation {
+    condition     = length(var.name_prefix) <= 10
+    error_message = "The name_prefix value must be 10 characters or less to comply with AWS name length rules."
+  }
 }
 
 variable "key_name" {
