@@ -42,6 +42,16 @@ resource "aws_security_group_rule" "vault_elb_access" {
   cidr_blocks       = [data.aws_vpc.vault_vpc.cidr_block]
 }
 
+# Expose Vault API to allowed inbound CIDR
+resource "aws_security_group_rule" "vault_ui_ingress" {
+  security_group_id = aws_security_group.vault.id
+  type              = "ingress"
+  from_port         = 8200
+  to_port           = 8200
+  protocol          = "tcp"
+  cidr_blocks       = var.allowed_inbound_cidrs
+}
+
 # this rule is needed for the health checking done in the ASG
 # at startup as well as peer auto-removal
 resource "aws_security_group_rule" "vault_internal_access" {
