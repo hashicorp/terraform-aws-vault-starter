@@ -50,9 +50,16 @@ This code is released under the MPL 2.0 License. Please see
 [LICENSE](https://github.com/hashicorp/terraform-aws-vault-oss/blob/master/LICENSE)
 for more details.
 
-## Note
+## Notes
 
-This module creates AWS Lambda functions and places them inside the VPC. Due to
+- This modules assumes you are using a default VPC and provides defaults for the
+  variables listed below. Please change the values of these variables based on
+  your VPC CIDR block. If you are not using a default VPC.
+    - `nat_gateway_subnet_cidr`
+    - `lambda_primary_subnet_cidr`
+    - `lambda_secondary_subnet_cidr`
+
+- This module creates AWS Lambda functions and places them inside the VPC. Due to
 this and some VPC networking changes AWS has recently deployed, it can take up
 45 minutes to successfully delete this environment. See [the following
 documentation](https://www.terraform.io/docs/providers/aws/r/lambda_function.html)
