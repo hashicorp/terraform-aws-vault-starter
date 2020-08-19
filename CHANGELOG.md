@@ -1,3 +1,12 @@
+## 0.2.1 (August 19, 2020)
+
+IMPROVEMENTS:
+
+* security:
+  - added security group rule to expose API/UI to allowed CIDR blocks
+  - exposed `elb_internal` variable to user
+* documentation: updated README
+
 ## 0.2.0 (August 13, 2020)
 
 IMPROVEMENTS:
