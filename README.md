@@ -51,7 +51,7 @@ module "vault-oss" {
   to install
 - `key_name`: The name of the SSH [key pairs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#prepare-key-pair)
 to use. This must exist in the specified AWS `region`
-- `elb_internal`: To connect to Vault via a load balancer, set this to `false`
+- `elb_internal`: To connect to Vault via a load balancer from outside the VPC, set this to `false`
 
 
 Run `terraform init` and `terraform apply` to provision a Vault cluster.
