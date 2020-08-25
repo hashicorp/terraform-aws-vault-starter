@@ -23,7 +23,7 @@ Module](https://registry.terraform.io/modules/hashicorp/vault/aws/0.13.7).
 ## How to Use This Module
 
 Create a Terraform configuration (`main.tf`) that pulls in the module and specifies values
-of the requires variables:
+of the required variables:
 
 ```hcl
 provider "aws" {
