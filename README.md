@@ -32,13 +32,14 @@ provider "aws" {
 
 module "vault-oss" {
   source                = "hashicorp/vault-oss/aws"
-  version               = "0.1.0"
+  version               = "0.2.1"
   allowed_inbound_cidrs = ["<list of inbound CIDRs>"]
   vpc_id                = "<your VPC id>"
-  vault_version         = "<vault version (ex: 1.4.2)>"
+  vault_version         = "<vault version (ex: 1.5.2)>"
   owner                 = "<owner name/tag>"
   name_prefix           = "<name prefix you would like attached to your environment>"
   key_name              = "<your SSH key name>"
+  elb_internal          = false
 }
 ```
 
