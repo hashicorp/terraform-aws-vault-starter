@@ -45,7 +45,7 @@ module "vault-oss" {
 
 - `version`: The Vault AWS [module version](https://registry.terraform.io/modules/hashicorp/vault-oss/aws/0.2.1)
   to pull (e.g. `0.2.1`) during the initialization
-- `allowed_inbound_cidrs`: Allowed subnet CIDR blocks for NAT gateway
+- `allowed_inbound_cidrs`: Allowed CIDR blocks for SSH and API/UI access
 - `vpc_id`: ID of the VPC where cloud resources to be provisioned (see the [Notes](#notes))
 - `vault_version`: Desired [Vault version](https://releases.hashicorp.com/vault/)
   to install
