@@ -22,8 +22,8 @@ Module](https://registry.terraform.io/modules/hashicorp/vault/aws/0.13.7).
 
 ## How to Use This Module
 
-- Create a Terraform configuration that pulls in the module and specifies values
-  of the requires variables:
+Create a Terraform configuration (`main.tf`) that pulls in the module and specifies values
+of the required variables:
 
 ```hcl
 provider "aws" {
@@ -32,17 +32,29 @@ provider "aws" {
 
 module "vault-oss" {
   source                = "hashicorp/vault-oss/aws"
-  version               = "0.1.0"
+  version               = "<module version>"
   allowed_inbound_cidrs = ["<list of inbound CIDRs>"]
   vpc_id                = "<your VPC id>"
-  vault_version         = "<vault version (ex: 1.4.2)>"
+  vault_version         = "<vault version (ex: 1.5.2)>"
   owner                 = "<owner name/tag>"
   name_prefix           = "<name prefix you would like attached to your environment>"
   key_name              = "<your SSH key name>"
+  elb_internal          = false
 }
 ```
 
-- Run `terraform init` and `terraform apply`
+- `version`: The Vault AWS [module version](https://registry.terraform.io/modules/hashicorp/vault-oss/aws/0.2.1)
+  to pull (e.g. `0.2.1`) during the initialization
+- `allowed_inbound_cidrs`: Allowed CIDR blocks for SSH and API/UI access
+- `vpc_id`: ID of the VPC where cloud resources to be provisioned (see the [Notes](#notes))
+- `vault_version`: Desired [Vault version](https://releases.hashicorp.com/vault/)
+  to install
+- `key_name`: The name of the SSH [key pairs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#prepare-key-pair)
+to use. This must exist in the specified AWS `region`
+- `elb_internal`: To connect to Vault via a load balancer from outside the VPC, set this to `false`
+
+
+Run `terraform init` and `terraform apply` to provision a Vault cluster.
 
 ## License
 
