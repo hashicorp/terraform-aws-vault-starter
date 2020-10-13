@@ -7,6 +7,7 @@ by the [Vault with Integrated Storage Reference
 Architecture](https://learn.hashicorp.com/vault/operations/raft-reference-architecture#node)).
 
 ## About This Module
+
 This module implements the [Vault with Integrated Storage Reference
 Architecture](https://learn.hashicorp.com/vault/operations/raft-reference-architecture#node)
 on AWS using the Open Source version of Vault.
@@ -31,7 +32,7 @@ provider "aws" {
 }
 
 module "vault-oss" {
-  source                = "hashicorp/vault-oss/aws"
+  source                = "hashicorp/vault-starter/aws"
   version               = "<module version>"
   allowed_inbound_cidrs = ["<list of inbound CIDRs>"]
   vpc_id                = "<your VPC id>"
@@ -50,9 +51,8 @@ module "vault-oss" {
 - `vault_version`: Desired [Vault version](https://releases.hashicorp.com/vault/)
   to install
 - `key_name`: The name of the SSH [key pairs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#prepare-key-pair)
-to use. This must exist in the specified AWS `region`
+  to use. This must exist in the specified AWS `region`
 - `elb_internal`: To connect to Vault via a load balancer from outside the VPC, set this to `false`
-
 
 Run `terraform init` and `terraform apply` to provision a Vault cluster.
 
@@ -67,12 +67,13 @@ for more details.
 - This modules assumes you are using a default VPC and provides defaults for the
   variables listed below. Please change the values of these variables based on
   your VPC CIDR block. If you are not using a default VPC.
-    - `nat_gateway_subnet_cidr`
-    - `lambda_primary_subnet_cidr`
-    - `lambda_secondary_subnet_cidr`
+
+  - `nat_gateway_subnet_cidr`
+  - `lambda_primary_subnet_cidr`
+  - `lambda_secondary_subnet_cidr`
 
 - This module creates AWS Lambda functions and places them inside the VPC. Due to
-this and some VPC networking changes AWS has recently deployed, it can take up
-45 minutes to successfully delete this environment. See [the following
-documentation](https://www.terraform.io/docs/providers/aws/r/lambda_function.html)
-for more details on this issue.
+  this and some VPC networking changes AWS has recently deployed, it can take up
+  45 minutes to successfully delete this environment. See [the following
+  documentation](https://www.terraform.io/docs/providers/aws/r/lambda_function.html)
+  for more details on this issue.
