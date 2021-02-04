@@ -90,7 +90,7 @@ resource "aws_autoscaling_group" "vault" {
   desired_capacity          = var.vault_nodes
   min_elb_capacity          = var.vault_nodes
   wait_for_elb_capacity     = var.vault_nodes
-  wait_for_capacity_timeout = "480s"
+  wait_for_capacity_timeout = "900s"
   health_check_grace_period = 300
   health_check_type         = "EC2"
   vpc_zone_identifier       = data.aws_subnet_ids.default.ids
