@@ -1,3 +1,9 @@
+## 0.2.2 (February 04, 2021)
+
+IMPROVEMENTS:
+
+* Increased `wait_for_capacity_timeout` in ASG to make sure `terraform apply` doesn't time out
+
 ## 0.2.1 (August 19, 2020)
 
 IMPROVEMENTS:
