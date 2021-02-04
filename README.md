@@ -31,7 +31,7 @@ provider "aws" {
 }
 
 module "vault-oss" {
-  source                = "hashicorp/vault-oss/aws"
+  source                = "hashicorp/vault-starter/aws"
   version               = "<module version>"
   allowed_inbound_cidrs = ["<list of inbound CIDRs>"]
   vpc_id                = "<your VPC id>"

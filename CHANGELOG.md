@@ -1,3 +1,9 @@
+## 0.2.3 (February 04, 2021)
+
+IMPROVEMENTS:
+
+* Clarify README
+
 ## 0.2.2 (February 04, 2021)
 
 IMPROVEMENTS:
