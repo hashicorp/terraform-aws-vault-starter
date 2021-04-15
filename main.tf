@@ -11,6 +11,7 @@ module "vault_cluster" {
   instance_type                = var.instance_type
   vault_nodes                  = var.vault_nodes
   vault_cluster_version        = var.vault_cluster_version
+  lb_subnets                   = var.lb_subnets
   nat_gateway_subnet_cidr      = var.nat_gateway_subnet_cidr
   lambda_primary_subnet_cidr   = var.lambda_primary_subnet_cidr
   lambda_secondary_subnet_cidr = var.lambda_secondary_subnet_cidr
