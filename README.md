@@ -40,6 +40,7 @@ module "vault-oss" {
   name_prefix           = "<name prefix you would like attached to your environment>"
   key_name              = "<your SSH key name>"
   elb_internal          = false
+  lb_subnets            = ["<subnet1>","<subnet2>"]
 }
 ```
 

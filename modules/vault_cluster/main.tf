@@ -49,7 +49,7 @@ resource "aws_lb" "vault" {
   name               = "${random_id.environment_name.hex}-vault-nlb"
   internal           = var.elb_internal
   load_balancer_type = "network"
-  subnets            = data.aws_subnet_ids.default.ids
+  subnets            = var.lb_subnets
 }
 
 resource "aws_lb_listener" "vault" {
