@@ -50,7 +50,7 @@ data "aws_iam_policy_document" "cluster_discovery_health" {
     ]
 
     resources = [
-      "${aws_kms_key.vault.arn}",
+      aws_kms_key.vault.arn,
     ]
   }
 }
