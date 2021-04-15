@@ -62,3 +62,7 @@ variable "lambda_primary_subnet_cidr" {
 variable "lambda_secondary_subnet_cidr" {
   description = "CIDR block for secondary lambda subnet"
 }
+
+variable "lb_subnets" {
+  description = "Subnets to place LB in"
+}
