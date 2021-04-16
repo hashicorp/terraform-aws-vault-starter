@@ -1,3 +1,10 @@
+data "aws_internet_gateway" "igw" {
+  filter {
+    name   = "attachment.vpc-id"
+    values = [var.vpc_id]
+  }
+}
+
 resource "aws_eip" "nat" {
   vpc = true
 }
@@ -10,6 +17,19 @@ resource "aws_nat_gateway" "gw" {
 resource "aws_subnet" "nat_gateway" {
   vpc_id     = data.aws_vpc.vault_vpc.id
   cidr_block = var.nat_gateway_subnet_cidr
+}
+
+resource "aws_route_table" "nat_gateway" {
+  vpc_id = data.aws_vpc.vault_vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = data.aws_internet_gateway.igw.id
+  }
+}
+resource "aws_route_table_association" "nat_gateway" {
+  subnet_id      = aws_subnet.nat_gateway.id
+  route_table_id = aws_route_table.nat_gateway.id
 }
 
 resource "aws_subnet" "lambda_primary" {
