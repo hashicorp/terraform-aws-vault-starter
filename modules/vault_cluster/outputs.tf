@@ -7,7 +7,7 @@ output "vault_address" {
 }
 
 output "vault_kms_key" {
-  vaule = aws_kms_key.vault.key_id
+  value = aws_kms_key.vault.key_id
 }
 
 output "vault_kms_alias" {
