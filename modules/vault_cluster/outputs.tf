@@ -11,7 +11,7 @@ output "vault_kms_key" {
 }
 
 output "vault_kms_alias" {
-  vaule = aws_kms_key_alias.vault.name
+  value = aws_kms_key_alias.vault.name
 }
 
 
