@@ -1,5 +1,9 @@
-output "vault_address" {
+output "vault_uri" {
   value = "http://${aws_lb.vault.dns_name}:8200"
+}
+
+output "vault_address" {
+  value = aws_lb.vault.dns_name
 }
 
 // Can be used to add additional SG rules to Vault instances.
