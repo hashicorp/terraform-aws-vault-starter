@@ -19,3 +19,11 @@ output "vault_kms_alias" {
 output "vault_security_group" {
   value = aws_security_group.vault.id
 }
+
+output "vault_lb_arn" {
+  value = aws_lb.vault.id
+}
+
+output "vault_tg_arn" {
+  value = aws_lb_target_group.vault.id
+}
