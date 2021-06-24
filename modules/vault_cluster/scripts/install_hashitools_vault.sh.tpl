@@ -22,6 +22,15 @@ apt-get install -y awscli
 echo "Configuring system time"
 timedatectl set-timezone UTC
 
+
+
+# Per https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/set-time.html#configure-amazon-time-service-ubuntu
+echo "Installing Chrony"
+apt-get install -y chrony 
+echo "Configuring Chrony for AWS NTP Servers"
+echo 'server 169.254.169.123 prefer iburst minpoll 4 maxpoll 4' >> /etc/chrony/chrony.conf 
+
+
 # Have the instance retrieve it's own instance id
 asg_name=$(aws autoscaling describe-auto-scaling-instances --instance-ids "$instance_id" --region "${region}" | jq -r ".AutoScalingInstances[].AutoScalingGroupName")
 
