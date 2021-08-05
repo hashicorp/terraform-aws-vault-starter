@@ -1,8 +1,8 @@
 data "aws_region" "current" {}
 
-data "aws_vpc" "vault_vpc" {
-  id = var.vpc_id
-}
+# data "aws_vpc" "vault_vpc" {
+#   id = var.vpc_id
+# }
 
 data "aws_ami" "ubuntu" {
   most_recent = true
@@ -20,9 +20,9 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 
-data "aws_subnet_ids" "default" {
-  vpc_id = data.aws_vpc.vault_vpc.id
-}
+# data "aws_subnet_ids" "vault_vpc" {
+#   vpc_id = data.aws_vpc.vault_vpc.id
+# }
 
 data "aws_availability_zones" "available" {
   state = "available"
@@ -45,11 +45,56 @@ data "template_file" "install_hashitools_vault" {
   }
 }
 
+resource "aws_vpc" "vault_vpc" {
+  cidr_block = "10.10.0.0/16"
+  enable_dns_support = true
+  enable_dns_hostnames = true
+
+  tags = {
+    Name = "vault"
+    Terraform = "true"
+  }
+}
+
+resource "aws_subnet" "private_subnet_a" {
+  vpc_id = aws_vpc.vault_vpc.id
+  cidr_block = "10.10.10.0/24"
+  availability_zone = "${data.aws_region.current.name}-a"
+
+  tags = {
+    Name = "private_subnet_a"
+    Terraform = "true"
+  }
+}
+
+resource "aws_subnet" "private_subnet_b" {
+  vpc_id = aws_vpc.vault_vpc.id
+  cidr_block = "10.10.11.0/24"
+  availability_zone = "${data.aws_region.current.name}-b"
+
+  tags = {
+    Name = "private_subnet_b"
+    Terraform = "true"
+  }
+}
+
+resource "aws_subnet" "private_subnet_c" {
+  vpc_id = aws_vpc.vault_vpc.id
+  cidr_block = "10.10.12.0/24"
+  availability_zone = "${data.aws_region.current.name}-c"
+
+  tags = {
+    Name = "private_subnet_c"
+    Terraform = "true"
+  }
+}
+
 resource "aws_lb" "vault" {
   name               = "${random_id.environment_name.hex}-vault-nlb"
   internal           = var.elb_internal
   load_balancer_type = "network"
-  subnets            = data.aws_subnet_ids.default.ids
+  # subnets            = data.aws_subnet_ids.default.ids
+  subnets            = data.aws_subnet_ids.vault_vpc.ids
 }
 
 resource "aws_lb_listener" "vault" {
@@ -93,7 +138,8 @@ resource "aws_autoscaling_group" "vault" {
   wait_for_capacity_timeout = "900s"
   health_check_grace_period = 300
   health_check_type         = "EC2"
-  vpc_zone_identifier       = data.aws_subnet_ids.default.ids
+  # vpc_zone_identifier       = data.aws_subnet_ids.default.ids
+  vpc_zone_identifier       = data.aws_subnet_ids.vault_vpc.ids
   target_group_arns         = [aws_lb_target_group.vault.arn]
 
   tags = [

@@ -51,15 +51,15 @@ variable "vault_cluster_version" {
 
 variable "nat_gateway_subnet_cidr" {
   description = "CIDR block for NAT gateway subnet"
-  default     = "172.31.160.0/20"
+  # default     = "172.31.160.0/20"
 }
 
 variable "lambda_primary_subnet_cidr" {
   description = "CIDR block for primary lambda subnet"
-  default     = "172.31.128.0/20"
+  # default     = "172.31.128.0/20"
 }
 
 variable "lambda_secondary_subnet_cidr" {
   description = "CIDR block for secondary lambda subnet"
-  default     = "172.31.144.0/20"
+  # default     = "172.31.144.0/20"
 }

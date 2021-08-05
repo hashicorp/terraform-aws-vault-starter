@@ -40,6 +40,7 @@ resource "aws_security_group_rule" "vault_elb_access" {
   to_port           = 8200
   protocol          = "tcp"
   cidr_blocks       = [data.aws_vpc.vault_vpc.cidr_block]
+  # cidr_blocks       = [aws_vpc.vault_vpc.cidr_block]
 }
 
 # Expose Vault API to allowed inbound CIDR

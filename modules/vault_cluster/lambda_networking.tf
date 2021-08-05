@@ -8,22 +8,22 @@ resource "aws_nat_gateway" "gw" {
 }
 
 resource "aws_subnet" "nat_gateway" {
-  vpc_id     = data.aws_vpc.vault_vpc.id
+  vpc_id     = aws_vpc.vault_vpc.id
   cidr_block = var.nat_gateway_subnet_cidr
 }
 
 resource "aws_subnet" "lambda_primary" {
-  vpc_id     = data.aws_vpc.vault_vpc.id
+  vpc_id     = aws_vpc.vault_vpc.id
   cidr_block = var.lambda_primary_subnet_cidr
 }
 
 resource "aws_subnet" "lambda_secondary" {
-  vpc_id     = data.aws_vpc.vault_vpc.id
+  vpc_id     = aws_vpc.vault_vpc.id
   cidr_block = var.lambda_secondary_subnet_cidr
 }
 
 resource "aws_route_table" "lambda" {
-  vpc_id = data.aws_vpc.vault_vpc.id
+  vpc_id = aws_vpc.vault_vpc.id
 
   route {
     cidr_block     = "0.0.0.0/0"
