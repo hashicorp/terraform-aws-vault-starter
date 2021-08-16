@@ -15,3 +15,4 @@
 modules/vault_cluster/packer/binaries/*.zip
 
 .DS_Store
+plans
