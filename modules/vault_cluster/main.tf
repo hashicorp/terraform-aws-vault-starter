@@ -1,13 +1,14 @@
 data "aws_region" "current" {}
 
+# data ""
 
 # data "aws_vpc" "vault_vpc" {
 #   id = var.vpc_id
 # }
 
-data "aws_vpc" "vault_vpc" {
-  name = data.terraform_remote_state.shared-services.aws_vpc..vpc_id
-}
+# data "aws_vpc" "vault_vpc" {
+#   name = data.terraform_remote_state.shared-services.aws_vpc.${"DevOps\ VPC"}.vpc_id
+# }
 
 data "aws_ami" "ubuntu" {
   most_recent = true
@@ -26,7 +27,8 @@ data "aws_ami" "ubuntu" {
 }
 
 data "aws_subnet_ids" "vault_vpc" {
-  vpc_id = data.aws_vpc.vault_vpc.id
+  # vpc_id = data.aws_vpc.vault_vpc.id
+  vpc_id = aws_vpc.vault_vpc.id
 }
 
 data "aws_availability_zones" "available" {

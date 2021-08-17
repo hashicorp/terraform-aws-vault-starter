@@ -39,7 +39,7 @@ resource "aws_security_group_rule" "vault_elb_access" {
   from_port         = 8200
   to_port           = 8200
   protocol          = "tcp"
-  cidr_blocks       = [data.aws_vpc.vault_vpc.cidr_block]
+  cidr_blocks       = [aws_vpc.vault_vpc.cidr_block]
   # cidr_blocks       = [aws_vpc.vault_vpc.cidr_block]
 }
 
