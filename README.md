@@ -1,78 +1,145 @@
 # Vault AWS Module
 
-This is Terraform module for provisioning Vault with [integrated
+This is a Terraform module for provisioning Vault with [integrated
 storage](https://www.vaultproject.io/docs/concepts/integrated-storage) on AWS.
 This module defaults to setting up a cluster with 5 Vault nodes (as recommended
 by the [Vault with Integrated Storage Reference
-Architecture](https://learn.hashicorp.com/vault/operations/raft-reference-architecture#node)).
+Architecture](https://learn.hashicorp.com/vault/operations/raft-reference-architecture)).
 
 ## About This Module
 This module implements the [Vault with Integrated Storage Reference
 Architecture](https://learn.hashicorp.com/vault/operations/raft-reference-architecture#node)
-on AWS using the Open Source version of Vault.
-
-This module automatically initializes the Vault cluster and places the initial
-root token and recovery keys in [AWS Secrets
-Manager](https://aws.amazon.com/secrets-manager/).
-
-For practitioners requiring [Consul](https://www.consul.io/) as a storage
-backend and/or a wider variety of configurable options out of the box, please
-see the [Terraform AWS Vault
-Module](https://registry.terraform.io/modules/hashicorp/vault/aws/0.13.7).
+on AWS using the open source version of Vault 1.8+.
 
 ## How to Use This Module
 
-Create a Terraform configuration (`main.tf`) that pulls in the module and specifies values
-of the required variables:
+- Ensure your AWS credentials are [configured
+  correctly](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html)
+  and have permission to use the following AWS services:
+    - Amazon Certificate Manager (ACM)
+    - Amazon EC2
+    - Amazon Elastic Load Balancing (ALB)
+    - AWS Identity & Access Management (IAM)
+    - AWS Key Management System (KMS)
+    - Amazon Secrets Manager
+    - AWS Systems Manager Session Manager (optional - used to connect to EC2
+      instances with session manager using the AWS CLI)
+    - Amazon VPC
+
+- To deploy without an existing VPC, use the [example
+  VPC](https://github.com/hashicorp/terraform-aws-vault-ent-starter/tree/main/examples/aws-vpc)
+  code to build out the pre-requisite environment. Ensure you are selecting a
+  region that has at least three [AWS Availability
+  Zones](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-availability-zones).
+
+- To deploy into an existing VPC, ensure the following components exist and are
+  routed to each other correctly:
+  - Three public subnets
+  - Three [NAT
+    gateways](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html) (one in each public subnet)
+  - Three private subnets (please make sure your private subnets are
+    specifically tagged so you can identify them. The Vault module will use
+    these tags to deploy the Vault servers into them.)
+
+- Use the
+  [example](https://github.com/hashicorp/terraform-aws-vault-ent-starter/tree/main/examples/aws-secrets-manager-acm)
+  code to create TLS certs and store them in [AWS Secrets
+  Manager](https://aws.amazon.com/secrets-manager/) along with importing them
+  into [AWS Certificate Manager](https://aws.amazon.com/certificate-manager/)
+
+- Create a Terraform configuration that pulls in the Vault module and specifies
+  values for the required variables:
 
 ```hcl
 provider "aws" {
-  region = "<your AWS region>"
+  # your AWS region
+  region = "us-east-1"
 }
 
-module "vault-oss" {
-  source                = "hashicorp/vault-starter/aws"
-  version               = "<module version>"
-  allowed_inbound_cidrs = ["<list of inbound CIDRs>"]
-  vpc_id                = "<your VPC id>"
-  vault_version         = "<vault version (ex: 1.5.2)>"
-  owner                 = "<owner name/tag>"
-  name_prefix           = "<name prefix you would like attached to your environment>"
-  key_name              = "<your SSH key name>"
-  elb_internal          = false
+module "vault" {
+  source  = "hashicorp/vault-starter/aws"
+  version = "1.0.0"
+
+  # prefix for tagging/naming AWS resources
+  resource_name_prefix = "test"
+  # VPC ID you wish to deploy into
+  vpc_id = "vpc-abc123xxx"
+  # private subnet tags are required and allow you to filter which
+  # subnets you will deploy your Vault nodes into
+  private_subnet_tags = {
+    Vault = "deploy"
+  }
+  # AWS Secrets Manager ARN where TLS certs are stored
+  secrets_manager_arn = "arn:aws::secretsmanager:abc123xxx"
+  # The shared DNS SAN of the TLS certs being used
+  leader_tls_servername = "vault.server.com"
+  # The cert ARN to be used on the Vault LB listener
+  lb_certificate_arn = "arn:aws:acm:abc123xxx"
 }
 ```
 
-- `version`: The Vault AWS [module version](https://registry.terraform.io/modules/hashicorp/vault-oss/aws/0.2.1)
-  to pull (e.g. `0.2.1`) during the initialization
-- `allowed_inbound_cidrs`: Allowed CIDR blocks for SSH and API/UI access
-- `vpc_id`: ID of the VPC where cloud resources to be provisioned (see the [Notes](#notes))
-- `vault_version`: Desired [Vault version](https://releases.hashicorp.com/vault/)
-  to install
-- `key_name`: The name of the SSH [key pairs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#prepare-key-pair)
-to use. This must exist in the specified AWS `region`
-- `elb_internal`: To connect to Vault via a load balancer from outside the VPC, set this to `false`
+  - Run `terraform init` and `terraform apply`
 
+  - You must
+    [initialize](https://www.vaultproject.io/docs/commands/operator/init#operator-init)
+    your Vault cluster after you create it. Begin by logging into your Vault
+    cluster using one of the following methods:
+      - Using [Session
+        Manager](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/session-manager.html)
+      - SSH (you must provide the optional SSH key pair through the `key_name`
+        variable and set a value for the `allowed_inbound_cidrs_ssh` variable.
+          - Please note this Vault cluster is not public-facing. If you want to
+            use SSH from outside the VPC, you are required to establish your own
+            connection to it (VPN, etc).
 
-Run `terraform init` and `terraform apply` to provision a Vault cluster.
+  - To initialize the Vault cluster, run the following commands:
+
+```
+$ sudo -i
+# vault operator init
+```
+
+  - This should return back the following output which includes the recovery
+    keys and initial root token (omitted here):
+
+```
+...
+Success! Vault is initialized
+```
+
+  - Please securely store the recovery keys and initial root token that Vault
+    returns to you.
+  - To check the status of your Vault cluster, export your Vault token and run
+    the
+    [list-peers](https://www.vaultproject.io/docs/commands/operator/raft#list-peers)
+    command:
+
+```
+# export VAULT_TOKEN="<your Vault token>"
+# vault operator raft list-peers
+```
+
+- Please note that Vault does not enable [dead server
+  cleanup](https://www.vaultproject.io/docs/concepts/integrated-storage/autopilot#dead-server-cleanup)
+  by default. You must enable this to avoid manually managing the Raft
+  configuration every time there is a change in the Vault ASG. To enable dead
+  server cleanup, run the following command:
+
+ ```
+# vault operator raft autopilot set-config \
+    -cleanup-dead-servers=true \
+    -dead-server-last-contact-threshold=10 \
+    -min-quorum=3
+ ```
+
+- You can verify these settings after you apply them by running the following command:
+
+```
+# vault operator raft autopilot get-config
+```
 
 ## License
 
-This code is released under the MPL 2.0 License. Please see
-[LICENSE](https://github.com/hashicorp/terraform-aws-vault-oss/blob/master/LICENSE)
+This code is released under the Mozilla Public License 2.0. Please see
+[LICENSE](https://github.com/hashicorp/terraform-aws-vault-ent-starter/blob/main/LICENSE)
 for more details.
-
-## Notes
-
-- This modules assumes you are using a default VPC and provides defaults for the
-  variables listed below. Please change the values of these variables based on
-  your VPC CIDR block. If you are not using a default VPC.
-    - `nat_gateway_subnet_cidr`
-    - `lambda_primary_subnet_cidr`
-    - `lambda_secondary_subnet_cidr`
-
-- This module creates AWS Lambda functions and places them inside the VPC. Due to
-this and some VPC networking changes AWS has recently deployed, it can take up
-45 minutes to successfully delete this environment. See [the following
-documentation](https://www.terraform.io/docs/providers/aws/r/lambda_function.html)
-for more details on this issue.
