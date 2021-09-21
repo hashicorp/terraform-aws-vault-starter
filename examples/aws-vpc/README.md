@@ -2,7 +2,7 @@
 
 ## About This Example
 
-In order to deploy the Vault Enterprise module, you must have an AWS VPC that
+In order to deploy the Vault module, you must have an AWS VPC that
 meets the requirements [listed in the main
 README](../../README.md#how-to-use-this-module). If you do not already have an
 existing VPC, you can use the example code in this directory to provision it
