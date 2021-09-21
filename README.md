@@ -92,6 +92,14 @@ module "vault" {
             use SSH from outside the VPC, you are required to establish your own
             connection to it (VPN, etc).
 
+**Please Note**: if you are using Session Manager to connect to your nodes and
+will run vault commands as the default `ssm-user`, it is important you first run
+the following command to source the environment variables that Vault requires:
+
+```
+$ . /etc/profile
+```
+
   - To initialize the Vault cluster, run the following commands:
 
 ```
