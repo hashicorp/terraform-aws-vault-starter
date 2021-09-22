@@ -8,7 +8,7 @@
 * `userdata_script` - Userdata script for EC2 instance. Must be base64-encoded.
 * `vault_lb_sg_id` - Security group ID of Vault load balancer (will not be read if you are using a network load balancer)
 * `vault_subnets` - Private subnets where Vault will be deployed
-* `vault_target_group_arn - Target group ARN to register Vault nodes with
+* `vault_target_group_arn` - Target group ARN to register Vault nodes with
 * `vpc_id` - VPC ID where Vault will be deployed
 
 ## Example usage
