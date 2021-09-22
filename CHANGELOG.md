@@ -1,3 +1,16 @@
+## 1.0.0 (September 22, 2021)
+
+IMPROVEMENTS:
+
+* Updated README
+* Break code into submodules and add submodule READMEs
+* Deploy Vault nodes into private subnets for better security
+* Better reflect Vault reference architecture and deployment guide
+* Require TLS certs on nodes and load balancers
+* Remove lambda functions and use autopilot features for server cleanup
+* Tighten file/folder permissions created in userdata script
+* Add AWS Session Manager capability for logging into nodes
+
 ## 0.2.3 (February 04, 2021)
 
 IMPROVEMENTS:
