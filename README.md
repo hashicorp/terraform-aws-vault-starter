@@ -27,7 +27,7 @@ on AWS using the open source version of Vault 1.8+.
     - Amazon VPC
 
 - To deploy without an existing VPC, use the [example
-  VPC](https://github.com/hashicorp/terraform-aws-vault-ent-starter/tree/main/examples/aws-vpc)
+  VPC](https://github.com/hashicorp/terraform-aws-vault-starter/tree/main/examples/aws-vpc)
   code to build out the pre-requisite environment. Ensure you are selecting a
   region that has at least three [AWS Availability
   Zones](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-availability-zones).
@@ -42,7 +42,7 @@ on AWS using the open source version of Vault 1.8+.
     these tags to deploy the Vault servers into them.)
 
 - Use the
-  [example](https://github.com/hashicorp/terraform-aws-vault-ent-starter/tree/main/examples/aws-secrets-manager-acm)
+  [example](https://github.com/hashicorp/terraform-aws-vault-starter/tree/main/examples/aws-secrets-manager-acm)
   code to create TLS certs and store them in [AWS Secrets
   Manager](https://aws.amazon.com/secrets-manager/) along with importing them
   into [AWS Certificate Manager](https://aws.amazon.com/certificate-manager/)
@@ -148,5 +148,5 @@ $ vault operator raft autopilot get-config
 ## License
 
 This code is released under the Mozilla Public License 2.0. Please see
-[LICENSE](https://github.com/hashicorp/terraform-aws-vault-ent-starter/blob/main/LICENSE)
+[LICENSE](https://github.com/hashicorp/terraform-aws-vault-starter/blob/main/LICENSE)
 for more details.
