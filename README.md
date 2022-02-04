@@ -18,7 +18,7 @@ on AWS using the open source version of Vault 1.8+.
   and have permission to use the following AWS services:
     - Amazon Certificate Manager (ACM)
     - Amazon EC2
-    - Amazon Elastic Load Balancing (ALB)
+    - Amazon Elastic Load Balancing (ELB)
     - AWS Identity & Access Management (IAM)
     - AWS Key Management System (KMS)
     - Amazon Secrets Manager
