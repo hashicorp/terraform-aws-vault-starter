@@ -4,9 +4,10 @@ resource "aws_iam_instance_profile" "vault" {
 }
 
 resource "aws_iam_role" "instance_role" {
-  count              = var.user_supplied_iam_role_name != null ? 0 : 1
-  name_prefix        = "${var.resource_name_prefix}-vault"
-  assume_role_policy = data.aws_iam_policy_document.instance_role.json
+  count                = var.user_supplied_iam_role_name != null ? 0 : 1
+  name_prefix          = "${var.resource_name_prefix}-vault"
+  permissions_boundary = var.permissions_boundary
+  assume_role_policy   = data.aws_iam_policy_document.instance_role.json
 }
 
 data "aws_iam_policy_document" "instance_role" {

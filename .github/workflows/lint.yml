@@ -1,0 +1,31 @@
+name: Lint
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**/CHANGELOG.md'
+      - '**/README.md'
+  pull_request:
+    paths-ignore:
+      - '**/CHANGELOG.md'
+      - '**/README.md'
+
+jobs:
+  test:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup tfenv
+        run: |
+          TFENV_DL_TMP=$(mktemp -d)
+          curl -Lo $TFENV_DL_TMP/tfenv.zip https://github.com/tfutils/tfenv/archive/2989f1a5560e313f70f7711be592ddb68418862b.zip
+          unzip $TFENV_DL_TMP/tfenv.zip -d $TFENV_DL_TMP
+          mv $TFENV_DL_TMP/tfenv-2989f1a5560e313f70f7711be592ddb68418862b ~/.tfenv
+          echo "$HOME/.tfenv/bin" >> $GITHUB_PATH
+          echo "latest:^1.0" > .terraform-version
+      - name: Check Terraform formatting
+        run: tfenv install && terraform fmt -check -recursive

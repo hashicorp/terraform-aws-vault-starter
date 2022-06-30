@@ -5,6 +5,7 @@ module "iam" {
 
   aws_region                  = data.aws_region.current.name
   kms_key_arn                 = module.kms.kms_key_arn
+  permissions_boundary        = var.permissions_boundary
   resource_name_prefix        = var.resource_name_prefix
   secrets_manager_arn         = var.secrets_manager_arn
   user_supplied_iam_role_name = var.user_supplied_iam_role_name
@@ -22,23 +23,23 @@ module "kms" {
 module "loadbalancer" {
   source = "./modules/load_balancer"
 
-  allowed_inbound_cidrs = var.allowed_inbound_cidrs_lb
-  common_tags           = var.common_tags
-  lb_certificate_arn    = var.lb_certificate_arn
-  lb_health_check_path  = var.lb_health_check_path
-  lb_subnets            = module.networking.vault_subnet_ids
-  lb_type               = var.lb_type
-  resource_name_prefix  = var.resource_name_prefix
-  ssl_policy            = var.ssl_policy
-  vault_sg_id           = module.vm.vault_sg_id
-  vpc_id                = module.networking.vpc_id
+  allowed_inbound_cidrs   = var.allowed_inbound_cidrs_lb
+  common_tags             = var.common_tags
+  lb_certificate_arn      = var.lb_certificate_arn
+  lb_deregistration_delay = var.lb_deregistration_delay
+  lb_health_check_path    = var.lb_health_check_path
+  lb_subnets              = var.private_subnet_ids
+  lb_type                 = var.lb_type
+  resource_name_prefix    = var.resource_name_prefix
+  ssl_policy              = var.ssl_policy
+  vault_sg_id             = module.vm.vault_sg_id
+  vpc_id                  = module.networking.vpc_id
 }
 
 module "networking" {
   source = "./modules/networking"
 
-  private_subnet_tags = var.private_subnet_tags
-  vpc_id              = var.vpc_id
+  vpc_id = var.vpc_id
 }
 
 module "user_data" {
@@ -51,6 +52,13 @@ module "user_data" {
   secrets_manager_arn         = var.secrets_manager_arn
   user_supplied_userdata_path = var.user_supplied_userdata_path
   vault_version               = var.vault_version
+}
+
+locals {
+  vault_target_group_arns = concat(
+    [module.loadbalancer.vault_target_group_arn],
+    var.additional_lb_target_groups,
+  )
 }
 
 module "vm" {
@@ -68,7 +76,7 @@ module "vm" {
   userdata_script           = module.user_data.vault_userdata_base64_encoded
   user_supplied_ami_id      = var.user_supplied_ami_id
   vault_lb_sg_id            = module.loadbalancer.vault_lb_sg_id
-  vault_subnets             = module.networking.vault_subnet_ids
-  vault_target_group_arn    = module.loadbalancer.vault_target_group_arn
+  vault_subnets             = var.private_subnet_ids
+  vault_target_group_arns   = local.vault_target_group_arns
   vpc_id                    = module.networking.vpc_id
 }

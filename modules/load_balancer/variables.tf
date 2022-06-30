@@ -15,6 +15,12 @@ variable "lb_certificate_arn" {
   description = "ARN of TLS certificate imported into ACM for use with LB listener"
 }
 
+variable "lb_deregistration_delay" {
+  type        = string
+  description = "Amount time, in seconds, for Vault LB target group to wait before changing the state of a deregistering target from draining to unused."
+  default     = 300
+}
+
 variable "lb_health_check_path" {
   type        = string
   description = "The endpoint to check for Vault's health status."

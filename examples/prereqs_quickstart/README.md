@@ -1,12 +1,12 @@
-# EXAMPLE: Create a Prerequisite VPC
+# EXAMPLE: Prerequisite Configuration (VPC and Secrets)
 
 ## About This Example
 
 In order to deploy the Vault module, you must have an AWS VPC that
 meets the requirements [listed in the main
-README](../../README.md#how-to-use-this-module). If you do not already have an
-existing VPC, you can use the example code in this directory to provision it
-along with all the other required infrastructure components.
+README](../../README.md#how-to-use-this-module) along with TLS certs that can be
+used with the Vault nodes and load balancer. If you do not already have these
+resources, you can use the code provided in this directory to provision them. 
 
 ## How to Use This Module
 
@@ -26,9 +26,8 @@ along with all the other required infrastructure components.
   be sure to change the value for the `azs` variable as well and specify the
   appropriate availability zones for your new region.
 
-- You must note the value for `private_subnet_tags` (this value is provided as
-  output to you after Terraform runs). This will be required input to the Vault
-  installation module and allows the Vault nodes to be correctly deployed in
-  private subnets. If you change the default value set for `private_subnet_tags`
-  in this example, please be sure to provide it when running the Vault
-  installation module as well.
+### Security Note:
+- The [Terraform State](https://www.terraform.io/docs/language/state/index.html)
+  produced by this code has sensitive data (cert private keys) stored in it.
+  Please secure your Terraform state using the [recommendations listed
+  here](https://www.terraform.io/docs/language/state/sensitive-data.html#recommendations).

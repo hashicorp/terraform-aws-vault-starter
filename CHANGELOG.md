@@ -1,3 +1,16 @@
+## Unreleased
+
+IMPROVEMENTS:
+
+* Update package name syntax in userdata script to prevent breakage when installing latest versions of Vault enterprise.
+* Update examples directory with quickstart file that reduces number of steps to
+  provision pre-reqs
+* Remove data sources for AWS subnets and allow user to explicitly specify
+  private subnet IDs in main module
+* Update main module outputs
+* Update default Vault version
+* Update Terraform version pin
+
 ## 1.0.0 (September 22, 2021)
 
 IMPROVEMENTS:

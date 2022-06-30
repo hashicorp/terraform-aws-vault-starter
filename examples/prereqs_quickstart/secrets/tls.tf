@@ -6,7 +6,6 @@ resource "tls_private_key" "ca" {
 
 # Create a CA cert with the private key you just generated.
 resource "tls_self_signed_cert" "ca" {
-  key_algorithm   = tls_private_key.ca.algorithm
   private_key_pem = tls_private_key.ca.private_key_pem
 
   subject {
@@ -39,7 +38,6 @@ resource "tls_private_key" "server" {
 }
 
 resource "tls_cert_request" "server" {
-  key_algorithm   = tls_private_key.server.algorithm
   private_key_pem = tls_private_key.server.private_key_pem
 
   subject {
@@ -58,7 +56,6 @@ resource "tls_cert_request" "server" {
 
 resource "tls_locally_signed_cert" "server" {
   cert_request_pem   = tls_cert_request.server.cert_request_pem
-  ca_key_algorithm   = tls_private_key.ca.algorithm
   ca_private_key_pem = tls_private_key.ca.private_key_pem
   ca_cert_pem        = tls_self_signed_cert.ca.cert_pem
 

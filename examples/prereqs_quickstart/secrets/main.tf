@@ -1,7 +1,3 @@
-provider "aws" {
-  region = var.aws_region
-}
-
 resource "aws_secretsmanager_secret" "tls" {
   name                    = "${var.resource_name_prefix}-tls-secret"
   description             = "contains TLS certs and private keys"
