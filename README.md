@@ -26,26 +26,18 @@ on AWS using the open source version of Vault 1.8+.
       instances with session manager using the AWS CLI)
     - Amazon VPC
 
-- To deploy without an existing VPC, use the [example
-  VPC](https://github.com/hashicorp/terraform-aws-vault-starter/tree/main/examples/aws-vpc)
-  code to build out the pre-requisite environment. Ensure you are selecting a
-  region that has at least three [AWS Availability
-  Zones](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-availability-zones).
+- This module assumes you have an existing VPC along with an AWS secrets manager
+  that contains TLS certs for the Vault nodes and load balancer. If you do not,
+  you may use the following
+  [quickstart](https://github.com/hashicorp/terraform-aws-vault-starter/tree/main/examples/prereqs_quickstart)
+  to deploy these resources.
 
 - To deploy into an existing VPC, ensure the following components exist and are
   routed to each other correctly:
   - Three public subnets
   - Three [NAT
     gateways](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html) (one in each public subnet)
-  - Three private subnets (please make sure your private subnets are
-    specifically tagged so you can identify them. The Vault module will use
-    these tags to deploy the Vault servers into them.)
-
-- Use the
-  [example](https://github.com/hashicorp/terraform-aws-vault-starter/tree/main/examples/aws-secrets-manager-acm)
-  code to create TLS certs and store them in [AWS Secrets
-  Manager](https://aws.amazon.com/secrets-manager/) along with importing them
-  into [AWS Certificate Manager](https://aws.amazon.com/certificate-manager/)
+  - Three private subnets
 
 - Create a Terraform configuration that pulls in the Vault module and specifies
   values for the required variables:
@@ -64,11 +56,13 @@ module "vault" {
   resource_name_prefix = "test"
   # VPC ID you wish to deploy into
   vpc_id = "vpc-abc123xxx"
-  # private subnet tags are required and allow you to filter which
+  # private subnet IDs are required and allow you to specify which
   # subnets you will deploy your Vault nodes into
-  private_subnet_tags = {
-    Vault = "deploy"
-  }
+  private_subnet_ids = [
+    "subnet-0xyz",
+    "subnet-1xyz",
+    "subnet-2xyz",
+  ]
   # AWS Secrets Manager ARN where TLS certs are stored
   secrets_manager_arn = "arn:aws::secretsmanager:abc123xxx"
   # The shared DNS SAN of the TLS certs being used

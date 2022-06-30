@@ -1,8 +1,3 @@
-variable "aws_region" {
-  type        = string
-  description = "AWS region to deploy resources into"
-}
-
 variable "kms_key_id" {
   type        = string
   description = "Specifies the ARN or ID of the AWS KMS customer master key (CMK) to be used to encrypt the secret values in the versions stored in this secret. If you don't specify this value, then Secrets Manager defaults to using the AWS account's default CMK (the one named aws/secretsmanager"
@@ -34,3 +29,4 @@ variable "tags" {
     Vault = "tls-data"
   }
 }
+

@@ -52,11 +52,12 @@ resource "aws_lb" "vault_lb" {
 }
 
 resource "aws_lb_target_group" "vault" {
-  name        = "${var.resource_name_prefix}-vault-tg"
-  target_type = "instance"
-  port        = 8200
-  protocol    = local.lb_protocol
-  vpc_id      = var.vpc_id
+  name                 = "${var.resource_name_prefix}-vault-tg"
+  deregistration_delay = var.lb_deregistration_delay
+  target_type          = "instance"
+  port                 = 8200
+  protocol             = local.lb_protocol
+  vpc_id               = var.vpc_id
 
   health_check {
     healthy_threshold   = 3

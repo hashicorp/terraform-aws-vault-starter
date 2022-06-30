@@ -1,7 +1,3 @@
-provider "aws" {
-  region = var.aws_region
-}
-
 module "vpc" {
   source                 = "terraform-aws-modules/vpc/aws"
   version                = "3.0.0"
@@ -14,6 +10,5 @@ module "vpc" {
   public_subnets         = var.public_subnet_cidrs
 
   tags = var.common_tags
-
-  private_subnet_tags = var.private_subnet_tags
 }
+

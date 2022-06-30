@@ -1,0 +1,7 @@
+.terraform*
+*.tfvars
+*.tfstate
+backend*
+terraform*
+
+!.terraform-version

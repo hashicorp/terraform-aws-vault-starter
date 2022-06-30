@@ -8,6 +8,12 @@ variable "kms_key_arn" {
   description = "KMS Key ARN used for Vault auto-unseal permissions"
 }
 
+variable "permissions_boundary" {
+  description = "(Optional) IAM Managed Policy to serve as permissions boundary for IAM Role"
+  type        = string
+  default     = null
+}
+
 variable "resource_name_prefix" {
   type        = string
   description = "Resource name prefix used for tagging and naming AWS resources"

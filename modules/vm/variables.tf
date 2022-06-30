@@ -70,9 +70,9 @@ variable "vault_subnets" {
   description = "Private subnets where Vault will be deployed"
 }
 
-variable "vault_target_group_arn" {
-  type        = string
-  description = "Target group ARN to register Vault nodes with"
+variable "vault_target_group_arns" {
+  type        = list(string)
+  description = "Target group ARN(s) to register Vault nodes with"
 }
 
 variable "vpc_id" {

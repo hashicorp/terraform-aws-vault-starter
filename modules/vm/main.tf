@@ -52,8 +52,8 @@ resource "aws_security_group_rule" "vault_internal_raft" {
 # (which are the private subnets the Vault instances use)
 
 data "aws_subnet" "subnet" {
-  for_each = toset(var.vault_subnets)
-  id       = each.value
+  count = length(var.vault_subnets)
+  id    = var.vault_subnets[count.index]
 }
 
 locals {
@@ -152,7 +152,7 @@ resource "aws_autoscaling_group" "vault" {
   max_size            = var.node_count
   desired_capacity    = var.node_count
   vpc_zone_identifier = var.vault_subnets
-  target_group_arns   = [var.vault_target_group_arn]
+  target_group_arns   = var.vault_target_group_arns
 
   launch_template {
     id      = aws_launch_template.vault.id
