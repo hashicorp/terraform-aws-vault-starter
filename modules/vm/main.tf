@@ -159,27 +159,20 @@ resource "aws_autoscaling_group" "vault" {
     version = "$Latest"
   }
 
-  tags = concat(
-    [
+
+  dynamic "tag" {
+    for_each = merge(
       {
-        key                 = "Name"
-        value               = "${var.resource_name_prefix}-vault-server"
-        propagate_at_launch = true
-      }
-    ],
-    [
-      {
-        key                 = "${var.resource_name_prefix}-vault"
-        value               = "server"
-        propagate_at_launch = true
-      }
-    ],
-    [
-      for k, v in var.common_tags : {
-        key                 = k
-        value               = v
-        propagate_at_launch = true
-      }
-    ]
-  )
+        Name                                = "${var.resource_name_prefix}-vault-server"
+        "${var.resource_name_prefix}-vault" = "server"
+      },
+      var.common_tags
+    )
+
+    content {
+      key                 = tag.key
+      value               = tag.value
+      propagate_at_launch = true
+    }
+  }
 }

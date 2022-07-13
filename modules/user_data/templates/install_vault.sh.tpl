@@ -9,7 +9,13 @@ local_ipv4=$( curl -Ss -H "X-aws-ec2-metadata-token: $imds_token" 169.254.169.25
 curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
 apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
 apt-get update
+
+%{ if vault_ent_license_secret_manager_arn != null ~}
+apt-get install -y vault-enterprise=${vault_version}+* awscli jq
+vault_license_secret_result=$(aws secretsmanager get-secret-value --secret-id ${vault_ent_license_secret_manager_arn} --region ${region} --output text --query SecretString)
+%{else ~}
 apt-get install -y vault=${vault_version}-* awscli jq
+%{ endif ~}
 
 echo "Configuring system time"
 timedatectl set-timezone UTC
@@ -25,7 +31,7 @@ touch /opt/vault/tls/vault-key.pem
 chown root:vault /opt/vault/tls/vault-key.pem
 chmod 0640 /opt/vault/tls/vault-key.pem
 
-secret_result=$(aws secretsmanager get-secret-value --secret-id ${secrets_manager_arn} --region ${region} --output text --query SecretString)
+secret_result=$(aws secretsmanager get-secret-value --secret-id ${tls_cert_secrets_manager_arn} --region ${region} --output text --query SecretString)
 
 jq -r .vault_cert <<< "$secret_result" | base64 -d > /opt/vault/tls/vault-cert.pem
 
@@ -80,4 +86,7 @@ echo "Setup Vault profile"
 cat <<PROFILE | sudo tee /etc/profile.d/vault.sh
 export VAULT_ADDR="https://127.0.0.1:8200"
 export VAULT_CACERT="/opt/vault/tls/vault-ca.pem"
+%{ if vault_ent_license_secret_manager_arn != null ~}
+export VAULT_LICENSE="$vault_license_secret_result"
+%{ endif ~}
 PROFILE

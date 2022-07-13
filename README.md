@@ -32,6 +32,9 @@ on AWS using the open source version of Vault 1.8+.
   [quickstart](https://github.com/hashicorp/terraform-aws-vault-starter/tree/main/examples/prereqs_quickstart)
   to deploy these resources.
 
+  Alternatively, check out [vault enterprise quickstart](https://github.com/hashicorp/terraform-aws-vault-starter/tree/main/examples/prereqs_quickstart)
+  to deploy these resources with an additional AWS Secret Manager secret that will be used to store the vault enterprise license key.
+
 - To deploy into an existing VPC, ensure the following components exist and are
   routed to each other correctly:
   - Three public subnets
@@ -64,7 +67,9 @@ module "vault" {
     "subnet-2xyz",
   ]
   # AWS Secrets Manager ARN where TLS certs are stored
-  secrets_manager_arn = "arn:aws::secretsmanager:abc123xxx"
+  tls_cert_secrets_manager_arn = "arn:aws::secretsmanager:abc123xxx"
+  # AWS Secrets Manager ARN where a vault enterprise license is stored. Leave this out if you are not wanting to set up vault enterprise.
+  # vault_ent_license_secret_manager_arn = "arn:aws::secretsmanager:abc456xxx"
   # The shared DNS SAN of the TLS certs being used
   leader_tls_servername = "vault.server.com"
   # The cert ARN to be used on the Vault LB listener

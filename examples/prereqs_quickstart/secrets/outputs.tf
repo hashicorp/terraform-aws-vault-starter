@@ -8,7 +8,7 @@ output "leader_tls_servername" {
   value       = var.shared_san
 }
 
-output "secrets_manager_arn" {
+output "tls_cert_secrets_manager_arn" {
   description = "ARN of secrets_manager secret"
   value       = aws_secretsmanager_secret.tls.arn
 }

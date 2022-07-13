@@ -1,27 +1,28 @@
 variable "aws_region" {
   type        = string
-  description = "Specific AWS region being used"
+  description = "Specific AWS region being used."
 }
 
 variable "kms_key_arn" {
   type        = string
-  description = "KMS Key ARN used for Vault auto-unseal permissions"
+  description = "KMS Key ARN used for Vault auto-unseal permissions."
 }
 
 variable "permissions_boundary" {
-  description = "(Optional) IAM Managed Policy to serve as permissions boundary for IAM Role"
+  description = "(Optional) IAM Managed Policy to serve as permissions boundary for IAM Role."
   type        = string
   default     = null
 }
 
 variable "resource_name_prefix" {
   type        = string
-  description = "Resource name prefix used for tagging and naming AWS resources"
+  description = "Resource name prefix used for tagging and naming AWS resources."
 }
 
-variable "secrets_manager_arn" {
-  type        = string
-  description = "Secrets manager ARN where TLS cert info is stored"
+
+variable "secret_manager_arns" {
+  type        = list(string)
+  description = "A list of secret manager arns that will be referenced in the IAM role."
 }
 
 variable "user_supplied_iam_role_name" {

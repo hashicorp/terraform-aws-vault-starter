@@ -13,9 +13,9 @@ output "private_subnet_ids" {
   value       = module.vpc.private_subnet_ids
 }
 
-output "secrets_manager_arn" {
+output "tls_cert_secrets_manager_arn" {
   description = "ARN of secrets_manager secret"
-  value       = module.secrets.secrets_manager_arn
+  value       = module.secrets.tls_cert_secrets_manager_arn
 }
 
 output "vpc_id" {

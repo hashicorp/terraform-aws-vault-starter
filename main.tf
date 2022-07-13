@@ -7,8 +7,8 @@ module "iam" {
   kms_key_arn                 = module.kms.kms_key_arn
   permissions_boundary        = var.permissions_boundary
   resource_name_prefix        = var.resource_name_prefix
-  secrets_manager_arn         = var.secrets_manager_arn
   user_supplied_iam_role_name = var.user_supplied_iam_role_name
+  secret_manager_arns         = compact([var.tls_cert_secrets_manager_arn, var.vault_ent_license_secret_manager_arn])
 }
 
 module "kms" {
@@ -45,13 +45,14 @@ module "networking" {
 module "user_data" {
   source = "./modules/user_data"
 
-  aws_region                  = data.aws_region.current.name
-  kms_key_arn                 = module.kms.kms_key_arn
-  leader_tls_servername       = var.leader_tls_servername
-  resource_name_prefix        = var.resource_name_prefix
-  secrets_manager_arn         = var.secrets_manager_arn
-  user_supplied_userdata_path = var.user_supplied_userdata_path
-  vault_version               = var.vault_version
+  aws_region                           = data.aws_region.current.name
+  kms_key_arn                          = module.kms.kms_key_arn
+  leader_tls_servername                = var.leader_tls_servername
+  resource_name_prefix                 = var.resource_name_prefix
+  tls_cert_secrets_manager_arn         = var.tls_cert_secrets_manager_arn
+  vault_ent_license_secret_manager_arn = var.vault_ent_license_secret_manager_arn
+  user_supplied_userdata_path          = var.user_supplied_userdata_path
+  vault_version                        = var.vault_version
 }
 
 locals {

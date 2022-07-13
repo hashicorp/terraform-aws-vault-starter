@@ -95,9 +95,15 @@ variable "resource_name_prefix" {
   description = "Resource name prefix used for tagging and naming AWS resources"
 }
 
-variable "secrets_manager_arn" {
+variable "tls_cert_secrets_manager_arn" {
   type        = string
-  description = "Secrets manager ARN where TLS cert info is stored"
+  description = "Secrets manager ARN where TLS cert info is stored."
+}
+
+variable "vault_ent_license_secret_manager_arn" {
+  type        = string
+  description = "(Optional) Secret manager ARN where a vault enterprise license is stored."
+  default     = null
 }
 
 variable "ssl_policy" {

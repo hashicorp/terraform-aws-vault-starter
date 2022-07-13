@@ -41,14 +41,14 @@ module "quickstart" {
 module "vault" {
   source = "../"
 
-  common_tags           = var.common_tags
-  leader_tls_servername = module.quickstart.leader_tls_servername
-  lb_certificate_arn    = module.quickstart.lb_certificate_arn
-  permissions_boundary  = var.permissions_boundary
-  private_subnet_ids    = module.quickstart.private_subnet_ids
-  resource_name_prefix  = var.resource_name_prefix
-  secrets_manager_arn   = module.quickstart.secrets_manager_arn
-  vpc_id                = module.quickstart.vpc_id
+  common_tags                  = var.common_tags
+  leader_tls_servername        = module.quickstart.leader_tls_servername
+  lb_certificate_arn           = module.quickstart.lb_certificate_arn
+  permissions_boundary         = var.permissions_boundary
+  private_subnet_ids           = module.quickstart.private_subnet_ids
+  resource_name_prefix         = var.resource_name_prefix
+  tls_cert_secrets_manager_arn = module.quickstart.tls_cert_secrets_manager_arn
+  vpc_id                       = module.quickstart.vpc_id
 }
 
 # TODO: this sleep is much more imprecise than it should be

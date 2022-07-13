@@ -106,8 +106,6 @@ data "aws_iam_policy_document" "secrets_manager" {
       "secretsmanager:GetSecretValue",
     ]
 
-    resources = [
-      var.secrets_manager_arn,
-    ]
+    resources = var.secret_manager_arns
   }
 }
