@@ -3,7 +3,7 @@ variable "aws_region" {
   description = "AWS region where Vault is being deployed."
 }
 
-variable "kms_key_arn" {
+variable "kms_seal_unseal_key_arn" {
   type        = string
   description = "KMS Key ARN used for Vault auto-unseal."
 }

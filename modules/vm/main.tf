@@ -1,3 +1,13 @@
+locals {
+  launch_template_tags = merge(
+    {
+      Name                                = "${var.resource_name_prefix}-vault-server"
+      "${var.resource_name_prefix}-vault" = "server"
+    },
+    var.common_tags
+  )
+}
+
 data "aws_ami" "ubuntu" {
   count       = var.user_supplied_ami_id != null ? 0 : 1
   most_recent = true
@@ -114,68 +124,75 @@ resource "aws_security_group_rule" "vault_outbound" {
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
-resource "aws_launch_template" "vault" {
-  name          = "${var.resource_name_prefix}-vault"
-  image_id      = var.user_supplied_ami_id != null ? var.user_supplied_ami_id : data.aws_ami.ubuntu[0].id
-  instance_type = var.instance_type
-  key_name      = var.key_name != null ? var.key_name : null
-  user_data     = var.userdata_script
-  vpc_security_group_ids = [
+module "autoscaling" {
+  source  = "terraform-aws-modules/autoscaling/aws"
+  version = "6.5.1"
+
+  name = "${var.resource_name_prefix}-vault"
+
+  min_size         = var.node_count
+  max_size         = var.node_count
+  desired_capacity = var.node_count
+
+  vpc_zone_identifier = var.vault_subnets
+  security_groups = [
     aws_security_group.vault.id,
   ]
 
-  block_device_mappings {
-    device_name = "/dev/sda1"
-
-    ebs {
-      volume_type           = "gp3"
-      volume_size           = 100
-      throughput            = 150
-      iops                  = 3000
-      delete_on_termination = true
-    }
-  }
-
-  iam_instance_profile {
-    name = var.aws_iam_instance_profile
-  }
-
-  metadata_options {
-    http_endpoint = "enabled"
-    http_tokens   = "required"
-  }
-}
-
-resource "aws_autoscaling_group" "vault" {
-  name                = "${var.resource_name_prefix}-vault"
-  min_size            = var.node_count
-  max_size            = var.node_count
-  desired_capacity    = var.node_count
-  vpc_zone_identifier = var.vault_subnets
-  target_group_arns   = var.vault_target_group_arns
-
+  # TODO var wait for capacity
+  wait_for_capacity_timeout = var.wait_for_capacity_timeout
   health_check_type         = var.asg_health_check_type
   health_check_grace_period = var.asg_health_check_grace_period
 
-  launch_template {
-    id      = aws_launch_template.vault.id
-    version = "$Latest"
-  }
+  # Required for KMS volume encryption.
+  service_linked_role_arn = var.autoscaling_service_linked_role_arn
 
+  # Launch template
+  launch_template_name        = "${var.resource_name_prefix}-vault"
+  launch_template_description = "Launch template for the ${var.resource_name_prefix} vault cluster."
+  launch_template_version     = "$Latest"
+  update_default_version      = true
+  ebs_optimized               = false
+  image_id                    = var.user_supplied_ami_id != null ? var.user_supplied_ami_id : data.aws_ami.ubuntu[0].id
+  instance_type               = var.instance_type
+  key_name                    = var.key_name != null ? var.key_name : null
+  enable_monitoring           = false
 
-  dynamic "tag" {
-    for_each = merge(
-      {
-        Name                                = "${var.resource_name_prefix}-vault-server"
-        "${var.resource_name_prefix}-vault" = "server"
-      },
-      var.common_tags
-    )
+  block_device_mappings = [
+    {
+      # Root volume
+      device_name = "/dev/sda1"
+      ebs = {
+        delete_on_termination = true
+        volume_size           = 100
+        volume_type           = "gp3"
+        iops                  = 3000
+        throughput            = 150
+        encrypted             = true
+        kms_key_id            = var.backend_kms_key_arn
+      }
+    },
+  ]
 
-    content {
-      key                 = tag.key
-      value               = tag.value
-      propagate_at_launch = true
+  iam_instance_profile_arn = var.aws_iam_instance_profile
+
+  target_group_arns = var.vault_target_group_arns
+
+  tag_specifications = [
+    {
+      resource_type = "instance"
+      tags          = local.launch_template_tags
+    },
+    {
+      resource_type = "volume"
+      tags          = local.launch_template_tags
     }
+  ]
+
+  metadata_options = {
+    http_endpoint = "enabled"
+    http_tokens   = "required"
   }
+
+  user_data = var.userdata_script
 }

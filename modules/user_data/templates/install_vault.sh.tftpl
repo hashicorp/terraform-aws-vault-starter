@@ -13,6 +13,9 @@ apt-get update
 %{ if vault_ent_license_secret_manager_arn != null ~}
 apt-get install -y vault-enterprise=${vault_version}+* awscli jq
 vault_license_secret_result=$(aws secretsmanager get-secret-value --secret-id ${vault_ent_license_secret_manager_arn} --region ${region} --output text --query SecretString)
+echo "$vault_license_secret_result" > /opt/vault/vault.hclic
+sudo chown root:vault /opt/vault/vault.hclic
+sudo chmod 0640 /opt/vault/vault.hclic
 %{else ~}
 apt-get install -y vault=${vault_version}-* awscli jq
 %{ endif ~}
@@ -39,13 +42,21 @@ jq -r .vault_ca <<< "$secret_result" | base64 -d > /opt/vault/tls/vault-ca.pem
 
 jq -r .vault_pk <<< "$secret_result" | base64 -d > /opt/vault/tls/vault-key.pem
 
+# Install the CA Cert as a trusted root CA (On Debian & Derivatives) | An alternate method is required for other distributions.
+ln -s /opt/vault/tls/vault-ca.pem /usr/local/share/ca-certificates/ca.crt
+sudo update-ca-certificates
+
 cat << EOF > /etc/vault.d/vault.hcl
 ui = true
 disable_mlock = true
+%{ if vault_ent_license_secret_manager_arn != null ~}
+license_path = "/opt/vault/vault.hclic"
+%{ endif ~}
 
 storage "raft" {
   path    = "/opt/vault/data"
   node_id = "$instance_id"
+
   retry_join {
     auto_join = "provider=aws region=${region} tag_key=${name}-vault tag_value=server"
     auto_join_scheme = "https"
@@ -69,9 +80,8 @@ listener "tcp" {
 
 seal "awskms" {
   region     = "${region}"
-  kms_key_id = "${kms_key_arn}"
+  kms_key_id = "${kms_seal_unseal_key_arn}"
 }
-
 EOF
 
 # vault.hcl should be readable by the vault group only
@@ -86,7 +96,4 @@ echo "Setup Vault profile"
 cat <<PROFILE | sudo tee /etc/profile.d/vault.sh
 export VAULT_ADDR="https://127.0.0.1:8200"
 export VAULT_CACERT="/opt/vault/tls/vault-ca.pem"
-%{ if vault_ent_license_secret_manager_arn != null ~}
-export VAULT_LICENSE="$vault_license_secret_result"
-%{ endif ~}
 PROFILE

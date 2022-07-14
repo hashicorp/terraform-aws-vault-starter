@@ -80,14 +80,30 @@ variable "vpc_id" {
   description = "VPC ID where Vault will be deployed"
 }
 
-variable "asg_health_check_type" {
+variable "asg_health_check_grace_period" {
   description = "Time after instance comes into service before checking health."
   type        = string
   default     = null
 }
 
-variable "asg_health_check_grace_period" {
+variable "asg_health_check_type" {
   description = "'EC2' or 'ELB'. Controls how health checking is done. Set this to ELB once you have verified the service starts up properly"
   type        = string
   default     = null
+}
+
+variable "autoscaling_service_linked_role_arn" {
+  description = "The role arn used by the autoscaling group. Used in the module managed KMS policy."
+}
+
+variable "wait_for_capacity_timeout" {
+  description = "A maximum duration that Terraform should wait for ASG instances to be healthy before timing out."
+  type        = string
+  default     = null
+  nullable    = true
+}
+
+variable "backend_kms_key_arn" {
+  description = "KMS Key ARN used for other encryption / decryption mechanisms."
+  type        = string
 }
