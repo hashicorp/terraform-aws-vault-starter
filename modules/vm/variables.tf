@@ -79,3 +79,15 @@ variable "vpc_id" {
   type        = string
   description = "VPC ID where Vault will be deployed"
 }
+
+variable "asg_health_check_type" {
+  description = "Time after instance comes into service before checking health."
+  type        = string
+  default     = null
+}
+
+variable "asg_health_check_grace_period" {
+  description = "'EC2' or 'ELB'. Controls how health checking is done. Set this to ELB once you have verified the service starts up properly"
+  type        = string
+  default     = null
+}

@@ -65,19 +65,21 @@ locals {
 module "vm" {
   source = "./modules/vm"
 
-  allowed_inbound_cidrs     = var.allowed_inbound_cidrs_lb
-  allowed_inbound_cidrs_ssh = var.allowed_inbound_cidrs_ssh
-  aws_iam_instance_profile  = module.iam.aws_iam_instance_profile
-  common_tags               = var.common_tags
-  instance_type             = var.instance_type
-  key_name                  = var.key_name
-  lb_type                   = var.lb_type
-  node_count                = var.node_count
-  resource_name_prefix      = var.resource_name_prefix
-  userdata_script           = module.user_data.vault_userdata_base64_encoded
-  user_supplied_ami_id      = var.user_supplied_ami_id
-  vault_lb_sg_id            = module.loadbalancer.vault_lb_sg_id
-  vault_subnets             = var.private_subnet_ids
-  vault_target_group_arns   = local.vault_target_group_arns
-  vpc_id                    = module.networking.vpc_id
+  allowed_inbound_cidrs         = var.allowed_inbound_cidrs_lb
+  allowed_inbound_cidrs_ssh     = var.allowed_inbound_cidrs_ssh
+  aws_iam_instance_profile      = module.iam.aws_iam_instance_profile
+  common_tags                   = var.common_tags
+  instance_type                 = var.instance_type
+  key_name                      = var.key_name
+  lb_type                       = var.lb_type
+  node_count                    = var.node_count
+  resource_name_prefix          = var.resource_name_prefix
+  userdata_script               = module.user_data.vault_userdata_base64_encoded
+  user_supplied_ami_id          = var.user_supplied_ami_id
+  vault_lb_sg_id                = module.loadbalancer.vault_lb_sg_id
+  vault_subnets                 = var.private_subnet_ids
+  vault_target_group_arns       = local.vault_target_group_arns
+  vpc_id                        = module.networking.vpc_id
+  asg_health_check_type         = var.asg_health_check_type
+  asg_health_check_grace_period = var.asg_health_check_grace_period
 }

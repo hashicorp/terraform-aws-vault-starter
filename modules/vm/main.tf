@@ -154,6 +154,9 @@ resource "aws_autoscaling_group" "vault" {
   vpc_zone_identifier = var.vault_subnets
   target_group_arns   = var.vault_target_group_arns
 
+  health_check_type         = var.asg_health_check_type
+  health_check_grace_period = var.asg_health_check_grace_period
+
   launch_template {
     id      = aws_launch_template.vault.id
     version = "$Latest"
