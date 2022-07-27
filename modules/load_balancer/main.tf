@@ -12,11 +12,11 @@ resource "aws_security_group" "vault_lb" {
 
 resource "aws_security_group_rule" "vault_lb_inbound" {
   count             = var.lb_type == "application" && var.allowed_inbound_cidrs != null ? 1 : 0
-  description       = "Allow specified CIDRs access to load balancer on port 8200"
+  description       = "Allow specified CIDRs access to load balancer on port ${var.lb_listener_port}"
   security_group_id = aws_security_group.vault_lb[0].id
   type              = "ingress"
-  from_port         = 8200
-  to_port           = 8200
+  from_port         = var.lb_listener_port
+  to_port           = var.lb_listener_port
   protocol          = "tcp"
   cidr_blocks       = var.allowed_inbound_cidrs
 }
@@ -39,7 +39,7 @@ locals {
 
 resource "aws_lb" "vault_lb" {
   name                       = "${var.resource_name_prefix}-vault-lb"
-  internal                   = true
+  internal                   = var.is_vault_lb_internal
   load_balancer_type         = var.lb_type
   subnets                    = var.lb_subnets
   security_groups            = local.lb_security_groups
@@ -76,7 +76,7 @@ resource "aws_lb_target_group" "vault" {
 
 resource "aws_lb_listener" "vault" {
   load_balancer_arn = aws_lb.vault_lb.id
-  port              = 8200
+  port              = var.lb_listener_port
   protocol          = local.lb_protocol
   ssl_policy        = local.lb_protocol == "HTTPS" ? var.ssl_policy : null
   certificate_arn   = local.lb_protocol == "HTTPS" ? var.lb_certificate_arn : null
