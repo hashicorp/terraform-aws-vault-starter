@@ -159,6 +159,17 @@ resource "aws_autoscaling_group" "vault" {
     version = "$Latest"
   }
 
+  dynamic "tag" {
+    for_each = local.tags
+    content {
+      key                 = tag.value.key
+      value               = tag.value.value
+      propagate_at_launch = tag.value.propagate_at_launch
+    }
+  }
+}
+
+locals {
   tags = concat(
     [
       {
