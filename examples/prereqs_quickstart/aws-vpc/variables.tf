@@ -39,3 +39,8 @@ variable "vpc_cidr" {
   default     = "10.0.0.0/16"
 }
 
+variable "single_nat_gateway" {
+  type        = bool
+  default     = false
+  description = "Should be true if you want to provision a single shared NAT Gateway across all of your private networks"
+}
