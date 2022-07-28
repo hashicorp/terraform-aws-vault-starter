@@ -1,0 +1,32 @@
+# Copyright © 2014-2022 HashiCorp, Inc.
+#
+# This Source Code is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this project, you can obtain one at http://mozilla.org/MPL/2.0/.
+#
+
+name: Run integration tests
+description: Deploy infrastructure, test it, and destroy it
+inputs:
+  env_suffix:
+    description: 'Environment suffix'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - run: echo "Installing dependencies"
+      shell: bash
+    - name: Install dependencies
+      run: |
+        TFENV_DL_TMP=$(mktemp -d)
+        curl -Lo $TFENV_DL_TMP/tfenv.zip https://github.com/tfutils/tfenv/archive/2989f1a5560e313f70f7711be592ddb68418862b.zip
+        unzip $TFENV_DL_TMP/tfenv.zip -d $TFENV_DL_TMP
+        mv $TFENV_DL_TMP/tfenv-2989f1a5560e313f70f7711be592ddb68418862b ~/.tfenv
+        echo "$HOME/.tfenv/bin" >> $GITHUB_PATH
+      shell: bash
+    - run: echo "Deploying and running tests"
+      shell: bash
+    - name: Deploy and run tests
+      run: tfenv install && DEPLOY_ENV=inttest${{ inputs.env_suffix }} go test -v -timeout 120m
+      working-directory: ./test
+      shell: bash
+    - run: echo "Integration tests succeeded"
+      shell: bash
