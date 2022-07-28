@@ -1,0 +1,41 @@
+# Copyright © 2014-2022 HashiCorp, Inc.
+#
+# This Source Code is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this project, you can obtain one at http://mozilla.org/MPL/2.0/.
+#
+
+# If someone with write access comments "/ok-to-test" on a pull request, emit a repository_dispatch event
+name: Ok To Test
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  ok-to-test:
+    runs-on: ubuntu-latest
+    # Only run for PRs, not issue comments
+    if: ${{ github.event.issue.pull_request }}
+    steps:
+    # Generate a GitHub App installation access token from an App ID and private key
+    # To create a new GitHub App:
+    #   https://developer.github.com/apps/building-github-apps/creating-a-github-app/
+    # See app.yml for an example app manifest
+    - name: Generate token
+      id: generate_token
+      uses: tibdex/github-app-token@cdb5bfda87db263e4be5c6f570c4c39611ee952a # v1.4.0
+      with:
+        app_id: ${{ secrets.APP_ID }}
+        private_key: ${{ secrets.PRIVATE_KEY }}
+
+    - name: Slash Command Dispatch
+      uses: peter-evans/slash-command-dispatch@fc430081ad51bb37d160fa3a3ee718c121e6b90d # v2.2.1
+      env:
+        TOKEN: ${{ steps.generate_token.outputs.token }}
+      with:
+        token: ${{ env.TOKEN }} # GitHub App installation access token
+        # token: ${{ secrets.PERSONAL_ACCESS_TOKEN }} # PAT or OAuth token will also work
+        reaction-token: ${{ secrets.GITHUB_TOKEN }}
+        issue-type: pull-request
+        commands: ok-to-test
+        named-args: true
+        permission: write

@@ -1,3 +1,10 @@
+/**
+ * Copyright © 2014-2022 HashiCorp, Inc.
+ *
+ * This Source Code is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this project, you can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ */
+
 terraform {
   cloud {
     organization = "hc-tfc-dev"
@@ -17,7 +24,7 @@ terraform {
 
     testingtoolsaws = {
       source  = "app.terraform.io/hc-tfc-dev/testingtoolsaws"
-      version = "~> 0.2"
+      version = "~> 0.3"
     }
   }
 }
@@ -51,17 +58,6 @@ module "vault" {
   vpc_id                = module.quickstart.vpc_id
 }
 
-# TODO: this sleep is much more imprecise than it should be
-# Would be better to have a resource that waited until the ASG instances
-# appeared as managed instances in SSM instead of adding a 2 minute
-# buffer on top of a needed ~6 minute delay before they appear
-resource "time_sleep" "wait_for_servers_to_appear_in_ssm" {
-  create_duration = "8m"
-
-  depends_on = [
-    module.vault,
-  ]
-}
 
 data "aws_instances" "servers" {
   instance_state_names = [
@@ -69,22 +65,15 @@ data "aws_instances" "servers" {
   ]
 
   instance_tags = {
-    "aws:ec2launchtemplate:id" = module.vault.launch_template_id
+    "aws:autoscaling:groupName" = module.vault.asg_name
+    "aws:ec2launchtemplate:id"  = module.vault.launch_template_id
   }
-
-  depends_on = [
-    time_sleep.wait_for_servers_to_appear_in_ssm,
-  ]
 }
 
 resource "testingtoolsaws_ssm_runcommand" "wait_for_server_bootup" {
-  count = 5
-
-  document_name = "AWS-RunShellScript"
-
-  instance_ids = [
-    data.aws_instances.servers.ids[count.index],
-  ]
+  document_name              = "AWS-RunShellScript"
+  instance_ids               = sort(data.aws_instances.servers.ids)
+  wait_for_managed_instances = true
 
   parameters = {
     commands = "date && while [ ! -f /var/lib/cloud/instance/boot-finished ]; do sleep 5; done && date"
