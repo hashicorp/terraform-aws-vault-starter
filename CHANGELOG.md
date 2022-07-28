@@ -10,6 +10,7 @@ IMPROVEMENTS:
 * Update main module outputs
 * Update default Vault version
 * Update Terraform version pin
+* Add `permissions_boundary` variable to support creating the IAM Role with a permissions boundary
 
 ## 1.0.0 (September 22, 2021)
 
