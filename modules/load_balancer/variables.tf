@@ -62,3 +62,15 @@ variable "vpc_id" {
   type        = string
   description = "VPC ID where Vault will be deployed"
 }
+
+variable "is_vault_lb_internal" {
+  type        = bool
+  default     = true
+  description = "Whether the Vault load balancer is internal or not. if 'true' the ALB will be internal else if 'false' the ALB will be external"
+}
+
+variable "lb_listener_port" {
+  type        = number
+  default     = 8200
+  description = "Load balancer listener port where Vault would be accessible"
+}

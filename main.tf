@@ -27,6 +27,10 @@ module "kms" {
   user_supplied_kms_key_arn = var.user_supplied_kms_key_arn
 }
 
+locals {
+  lb_subnet_ids = var.is_vault_lb_internal ? var.private_subnet_ids : var.public_subnet_ids
+}
+
 module "loadbalancer" {
   source = "./modules/load_balancer"
 
@@ -35,12 +39,14 @@ module "loadbalancer" {
   lb_certificate_arn      = var.lb_certificate_arn
   lb_deregistration_delay = var.lb_deregistration_delay
   lb_health_check_path    = var.lb_health_check_path
-  lb_subnets              = var.private_subnet_ids
+  lb_subnets              = local.lb_subnet_ids
   lb_type                 = var.lb_type
   resource_name_prefix    = var.resource_name_prefix
   ssl_policy              = var.ssl_policy
   vault_sg_id             = module.vm.vault_sg_id
   vpc_id                  = module.networking.vpc_id
+  is_vault_lb_internal    = var.is_vault_lb_internal
+  lb_listener_port        = var.lb_listener_port
 }
 
 module "networking" {

@@ -147,3 +147,21 @@ variable "vpc_id" {
   type        = string
   description = "VPC ID where Vault will be deployed"
 }
+
+variable "is_vault_lb_internal" {
+  type        = bool
+  default     = true
+  description = "Whether the Vault load balancer is internal or not. if 'true' the ALB will be internal else if 'false' the ALB will be external"
+}
+
+variable "public_subnet_ids" {
+  type        = list(string)
+  default     = []
+  description = "Subnet IDs to deploy Vault ALB into if 'is_vault_lb_internal' is false. i.e When creating a public load balancer for Vault"
+}
+
+variable "lb_listener_port" {
+  type        = number
+  default     = 8200
+  description = "Load balancer listener port where Vault would be accessible"
+}
