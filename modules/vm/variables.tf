@@ -107,3 +107,13 @@ variable "backend_kms_key_arn" {
   description = "KMS Key ARN used for other encryption / decryption mechanisms."
   type        = string
 }
+
+variable "internal_zone_id" {
+  description = "This is the zone if that the autoscale DNS service will use to update the private R53 A records."
+  type        = string
+}
+
+variable "leader_tls_servername" {
+  description = "One of the shared DNS SAN used to create the certs use for mTLS."
+  type        = string
+}

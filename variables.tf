@@ -188,3 +188,8 @@ variable "wait_for_capacity_timeout" {
   type        = string
   default     = null
 }
+
+variable "internal_zone_id" {
+  description = "This is the zone if that the autoscale DNS service will use to update the private R53 A records."
+  type        = string
+}

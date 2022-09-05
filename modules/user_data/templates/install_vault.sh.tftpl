@@ -4,8 +4,13 @@ imds_token=$( curl -Ss -H "X-aws-ec2-metadata-token-ttl-seconds: 30" -XPUT 169.2
 instance_id=$( curl -Ss -H "X-aws-ec2-metadata-token: $imds_token" 169.254.169.254/latest/meta-data/instance-id )
 local_ipv4=$( curl -Ss -H "X-aws-ec2-metadata-token: $imds_token" 169.254.169.254/latest/meta-data/local-ipv4 )
 
-# install package
+# Hostname and TLS pre-reqs
+server_hostname="$instance_id.${leader_tls_servername}"
+hostnamectl set-hostname --static "$server_hostname"
+echo "$local_ipv4 $server_hostname" | sudo tee -a /etc/hosts > /dev/null
+sudo systemctl restart systemd-hostnamed
 
+# Install package
 curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
 apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
 apt-get update
@@ -23,7 +28,7 @@ apt-get install -y vault=${vault_version}-* awscli jq
 echo "Configuring system time"
 timedatectl set-timezone UTC
 
-# removing any default installation files from /opt/vault/tls/
+# Removing any default installation files from /opt/vault/tls/
 rm -rf /opt/vault/tls/*
 
 # /opt/vault/tls should be readable by all users of the system
@@ -67,8 +72,8 @@ storage "raft" {
   }
 }
 
-cluster_addr = "https://$local_ipv4:8201"
-api_addr = "https://$local_ipv4:8200"
+cluster_addr = "https://$server_hostname:8201"
+api_addr = "https://$server_hostname:8200"
 
 listener "tcp" {
   address            = "0.0.0.0:8200"

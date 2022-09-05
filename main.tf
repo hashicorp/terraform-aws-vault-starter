@@ -130,4 +130,6 @@ module "vm" {
   autoscaling_service_linked_role_arn = aws_iam_service_linked_role.autoscaling.arn
   wait_for_capacity_timeout           = var.wait_for_capacity_timeout
   backend_kms_key_arn                 = module.kms.backend_kms_key_arn
+  leader_tls_servername               = var.leader_tls_servername
+  internal_zone_id                    = var.internal_zone_id
 }

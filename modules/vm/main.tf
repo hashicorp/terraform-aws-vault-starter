@@ -1,8 +1,17 @@
 locals {
+  autoscaling_name = "${var.resource_name_prefix}-vault"
+
   launch_template_tags = merge(
     {
-      Name                                = "${var.resource_name_prefix}-vault-server"
-      "${var.resource_name_prefix}-vault" = "server"
+      Name                        = "${local.autoscaling_name}-server"
+      "${local.autoscaling_name}" = "server"
+    },
+    var.common_tags
+  )
+  asg_tags = merge(
+    {
+      Name                   = "${local.autoscaling_name}-server"
+      "asg:hostname_pattern" = "#instanceid.${var.leader_tls_servername}@${var.internal_zone_id}"
     },
     var.common_tags
   )
@@ -26,7 +35,7 @@ data "aws_ami" "ubuntu" {
 }
 
 resource "aws_security_group" "vault" {
-  name   = "${var.resource_name_prefix}-vault"
+  name   = local.autoscaling_name
   vpc_id = var.vpc_id
 
   tags = merge(
@@ -128,7 +137,7 @@ module "autoscaling" {
   source  = "terraform-aws-modules/autoscaling/aws"
   version = "6.5.1"
 
-  name = "${var.resource_name_prefix}-vault"
+  name = local.autoscaling_name
 
   min_size         = var.node_count
   max_size         = var.node_count
@@ -148,7 +157,7 @@ module "autoscaling" {
   service_linked_role_arn = var.autoscaling_service_linked_role_arn
 
   # Launch template
-  launch_template_name        = "${var.resource_name_prefix}-vault"
+  launch_template_name        = local.autoscaling_name
   launch_template_description = "Launch template for the ${var.resource_name_prefix} vault cluster."
   launch_template_version     = "$Latest"
   update_default_version      = true
@@ -189,10 +198,41 @@ module "autoscaling" {
     }
   ]
 
+  autoscaling_group_tags = local.asg_tags
+
   metadata_options = {
     http_endpoint = "enabled"
     http_tokens   = "required"
   }
 
   user_data = var.userdata_script
+
+  initial_lifecycle_hooks = [
+    {
+      name                    = "lifecycle-launching"
+      default_result          = "ABANDON"
+      heartbeat_timeout       = 60
+      lifecycle_transition    = "autoscaling:EC2_INSTANCE_LAUNCHING"
+      notification_target_arn = module.autoscale_dns.autoscale_handling_sns_topic_arn
+      role_arn                = module.autoscale_dns.agent_lifecycle_iam_role_arn
+    },
+    {
+      name                    = "TerminationLifeCycleHook"
+      default_result          = "CONTINUE"
+      heartbeat_timeout       = 60
+      lifecycle_transition    = "autoscaling:EC2_INSTANCE_TERMINATING"
+      notification_target_arn = module.autoscale_dns.autoscale_handling_sns_topic_arn
+      role_arn                = module.autoscale_dns.agent_lifecycle_iam_role_arn
+    }
+  ]
+}
+
+
+module "autoscale_dns" {
+  source  = "meltwater/asg-dns-handler/aws"
+  version = "2.1.7"
+
+  autoscale_handler_unique_identifier = "asg_hook"
+  autoscale_route53zone_arn           = var.internal_zone_id
+  vpc_name                            = var.resource_name_prefix
 }
